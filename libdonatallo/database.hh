@@ -21,6 +21,7 @@
 #define DONATALLO_DATABASE_HH
 
 #include <string>
+#include <stdexcept>
 
 #include <libdonatallo/detector.hh>
 #include <libdonatallo/project.hh>
@@ -31,6 +32,19 @@ namespace Donatallo {
 class DetectorChain;
 
 class Database {
+public:
+	class ParsingException : public std::runtime_error {
+	private:
+		std::string file_;
+		int line_, column_;
+		std::string msg_;
+
+	public:
+		ParsingException(const std::string& file, int line, int column, const std::string& msg);
+
+		static std::string build_what(const std::string& file, int line, int column, const std::string& msg);
+	};
+
 private:
 	std::vector<Project> projects_;
 

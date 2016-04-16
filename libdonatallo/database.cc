@@ -27,6 +27,29 @@
 
 namespace Donatallo {
 
+Database::ParsingException::ParsingException(const std::string& file, int line, int column, const std::string& msg)
+	: std::runtime_error(build_what(file, line, column, msg)),
+	  file_(file),
+	  line_(line),
+	  column_(column),
+	  msg_(file) {
+}
+
+std::string Database::ParsingException::build_what(const std::string& file, int line, int column, const std::string& msg) {
+	std::stringstream output;
+	output << file;
+
+	if (line >= 0) {
+		output << ":" << line + 1;
+		if (column >= 0)
+			output << ":" << column + 1;
+	}
+
+	output << ": " << msg;
+
+	return output.str();
+}
+
 Database::Database() {
 }
 

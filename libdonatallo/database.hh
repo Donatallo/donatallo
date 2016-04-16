@@ -34,6 +34,8 @@ class Database {
 private:
 	std::vector<Project> projects_;
 
+	void LoadFile(const std::string& path, const std::string& filename);
+
 public:
 	Database();
 

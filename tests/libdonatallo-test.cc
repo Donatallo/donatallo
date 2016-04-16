@@ -1,6 +1,7 @@
 #include <libdonatallo/database.hh>
 #include <libdonatallo/result.hh>
 #include <libdonatallo/detectorchain.hh>
+#include <libdonatallo/detectors/alwaysdetector.hh>
 
 #include "testing.h"
 
@@ -25,6 +26,7 @@ BEGIN_TEST(int, char*[])
 	}
 
 	{
+		// empty detector chain should not match anything
 		DetectorChain emptychain;
 
 		Result res = db.Query(emptychain);
@@ -32,4 +34,23 @@ BEGIN_TEST(int, char*[])
 		EXPECT_TRUE(res.empty());
 		EXPECT_EQUAL(res.size(), 0);
 	}
+
+	{
+		// AlwaysDetector always matches "always" tag
+		DetectorChain detectors;
+
+		detectors.Append<AlwaysDetector>();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_EQUAL(res.size(), 1);
+
+		if (res.size() >= 1) {
+			EXPECT_EQUAL(res[0].name, "always");
+		}
+	}
+
 END_TEST()

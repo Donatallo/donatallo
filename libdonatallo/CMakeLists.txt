@@ -4,6 +4,7 @@ SET(LIBDONATALLO_SOURCES
 	database.cc
 	detector.cc
 	detectorchain.cc
+	detectors/alwaysdetector.cc
 	result.cc
 )
 
@@ -12,6 +13,7 @@ SET(LIBDONATALLO_HEADERS
 	detector.hh
 	detectorchain.hh
 	detectorfactory.hh
+	detectors/alwaysdetector.hh
 	project.hh
 	result.hh
 )

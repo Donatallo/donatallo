@@ -39,6 +39,7 @@ public:
 
 	void Load(const std::string& path);
 
+	Result GetAll() const;
 	Result Query(const DetectorChain& detectors) const;
 };
 

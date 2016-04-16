@@ -34,6 +34,15 @@ void Database::Load(const std::string& path) {
 	YAML::Node database = YAML::LoadFile(path + "/meta.yml");
 }
 
+Result Database::GetAll() const {
+	Result res;
+
+	for (const auto& project: projects_)
+		res.Add(&project);
+
+	return res;
+}
+
 Result Database::Query(const DetectorChain& detectors) const {
 	Result res;
 

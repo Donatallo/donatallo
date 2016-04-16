@@ -1,4 +1,12 @@
 ---
+# never matching entry
+- name: never
+  description: never description
+  url: http://never
+  donations:
+    - type: url
+      url: http://never/donate
+
 # some fake application entries; should always be detected as
 # donatallo is built with cmake and uses yaml-cpp
 - name: cmake
@@ -20,14 +28,6 @@
   detection:
     pkgnames:
       - yaml-cpp
-
-# never matching entry
-- name: never
-  description: never description
-  url: http://never
-  donations:
-    - type: url
-      url: http://never/donate
 
 # always matching entries
 - name: always

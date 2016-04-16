@@ -17,41 +17,47 @@
  * along with donatallo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DONATALLO_RESULT_HH
-#define DONATALLO_RESULT_HH
-
-#include <vector>
+#include <libdonatallo/result.hh>
 
 namespace Donatallo {
 
-class Project;
-
-class Result {
-public:
-	enum class SortCriteria {
-		NAME,
-	};
-
-private:
-	std::vector<const Project*> results_;
-
-public:
-	Result();
-
-	void Add(const Project* project);
-
-	//Result Sort(SortCriteria criteria = SortCriteria::NAME, bool ascending = true) const;
-
-	size_t size() const;
-	bool empty() const;
-	const Project& operator[](size_t pos) const;
-
-	const Project* begin() const;
-	const Project* cbegin() const;
-	const Project* end() const;
-	const Project* cend() const;
-};
-
+Result::Result() {
 }
 
-#endif
+void Result::Add(const Project* project) {
+	results_.push_back(project);
+}
+
+//Result Result::Sort(SortCriteria criteria = SortCriteria::NAME, bool ascending = true) const {
+//	return this;
+//}
+
+size_t Result::size() const {
+	return results_.size();
+}
+
+bool Result::empty() const {
+	return results_.empty();
+}
+
+const Project& Result::operator[](size_t pos) const {
+	return *results_[pos];
+}
+
+const Project* Result::begin() const {
+	return *results_.cbegin();
+}
+
+const Project* Result::cbegin() const {
+	return *results_.cbegin();
+}
+
+const Project* Result::end() const {
+	return *results_.cend();
+}
+
+const Project* Result::cend() const {
+	return *results_.cend();
+}
+
+}

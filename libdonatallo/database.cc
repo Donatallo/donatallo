@@ -53,58 +53,102 @@ std::string Database::ParsingException::build_what(const std::string& file, int 
 Database::Database() {
 }
 
-void Database::LoadFile(const std::string& path, const std::string& filename) {
-	YAML::Node data = YAML::LoadFile(path + "/" + filename);
+void Database::LoadFile(const std::string& path) {
+	YAML::Node data = YAML::LoadFile(path);
 
 	if (!data.IsSequence())
-		throw std::runtime_error("bad database format (should be a sequence)");
-
-	int num_entry = 1;
+		throw YAML::Exception(data.Mark(), "must be a sequence");
 
 	for (const auto& entry : data) {
-		if (!entry["name"].IsDefined() || !entry["name"].IsScalar())
-			throw std::runtime_error(filename + ", entry #" + std::to_string(num_entry) + ": name missing or is not defined");
-
-		if (!entry["description"].IsDefined() || !entry["description"].IsScalar())
-			throw std::runtime_error(filename + ", entry #" + std::to_string(num_entry) + ": description missing or is not defined");
-
-		if (!entry["url"].IsDefined() || !entry["url"].IsScalar())
-			throw std::runtime_error(filename + ", entry #" + std::to_string(num_entry) + ": url missing or is not defined");
-
 		Project proj;
 
-		proj.name = entry["name"].Scalar();
-		proj.description = entry["description"].Scalar();
-		proj.url = entry["url"].Scalar();
+		{
+			const auto& name_node = entry["name"];
+
+			if (!name_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing name");
+
+			if (!name_node.IsScalar())
+				throw YAML::Exception(name_node.Mark(), "name must be a string");
+
+			proj.name = name_node.as<std::string>();
+		}
+
+		{
+			const auto& desc_node = entry["description"];
+
+			if (!desc_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing description");
+
+			if (!desc_node.IsScalar())
+				throw YAML::Exception(desc_node.Mark(), "description must be a string");
+
+			proj.description = desc_node.as<std::string>();
+		}
+
+		{
+			const auto& url_node = entry["url"];
+
+			if (!url_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing url");
+
+			if (!url_node.IsScalar())
+				throw YAML::Exception(url_node.Mark(), "url must be a string");
+
+			proj.url = url_node.as<std::string>();
+		}
+
+		{
+			const auto& detection_node = entry["detection"];
+
+			if (detection_node.IsDefined()) {
+				if (detection_node.IsMap()) {
+					for (const auto& detection : detection_node) {
+						Project::DetectionTagVector vec;
+
+						if (detection.second.IsSequence()) {
+							for (const auto& keyword : detection.second)
+								vec.emplace_back(keyword.as<std::string>());
+						}
+
+						proj.detection_tags.emplace(std::make_pair(detection.first.as<std::string>(), std::move(vec)));
+					}
+				} else {
+					throw YAML::Exception(detection_node.Mark(), "detection must be a map");
+				}
+			}
+		}
 
 		projects_.emplace_back(std::move(proj));
-
-		num_entry++;
 	}
 }
 
-void Database::Load(const std::string& path) {
-	YAML::Node meta = YAML::LoadFile(path + "/meta.yml");
+void Database::LoadMeta(const std::string& path, std::vector<std::string>& files_to_load) {
+	YAML::Node meta = YAML::LoadFile(path);
 
 	if (!meta.IsMap())
-		throw std::runtime_error("bad u metadata format (meta.yml should be a map)");
+		throw YAML::Exception(meta.Mark(), "must be a map");
 
-	if (!meta["version"].IsDefined() || !meta["version"].IsScalar())
-		throw std::runtime_error("bad database metadata format (version missing)");
-
-	std::string version = meta["version"].Scalar();
-
-	// version check
 	{
+		const auto& version_node = meta["version"];
+
+		if (!version_node.IsDefined())
+			throw YAML::Exception(meta.Mark(), "missing version");
+
+		if (!version_node.IsScalar())
+			throw YAML::Exception(meta.Mark(), "version must be a string");
+
+		std::string version = version_node.as<std::string>();
+
 		const int my_major = 1;
 		const int my_minor = 0;
 
 		size_t dot1pos = version.find('.');
 		if (dot1pos == std::string::npos)
-			throw std::runtime_error("bad database metadata format (bad version format)");
+			throw YAML::Exception(version_node.Mark(), "bad version format");
 		size_t dot2pos = version.find('.', dot1pos + 1);
 		if (dot2pos == std::string::npos)
-			throw std::runtime_error("bad database metadata format (bad version format)");
+			throw YAML::Exception(version_node.Mark(), "bad version format");
 
 		int major = std::stoi(version.substr(0, dot1pos));
 		int minor = std::stoi(version.substr(dot1pos + 1, dot2pos - dot1pos - 1));
@@ -119,16 +163,40 @@ void Database::Load(const std::string& path) {
 			std::cerr << "Warning: database minor version is newer than known to an application, which means that some database features may be unsupported" << std::endl;
 	}
 
-	if (!meta["files"].IsDefined()) {
-		std::cerr << "Warning: database is empty" << std::endl;
-		return;
+	{
+		const auto files_node = meta["files"];
+
+		if (!files_node.IsDefined())
+			throw YAML::Exception(files_node.Mark(), "missing files");
+
+		if (!files_node.IsSequence())
+			throw YAML::Exception(files_node.Mark(), "files must be a sequence");
+
+		for (const auto& file : files_node) {
+			if (!file.IsScalar())
+				throw YAML::Exception(file.Mark(), "file must be a string");
+
+			files_to_load.push_back(file.as<std::string>());
+		}
+	}
+}
+
+void Database::Load(const std::string& dbdir) {
+	std::vector<std::string> files_to_load;
+
+	try {
+		LoadMeta(dbdir + "/meta.yml", files_to_load);
+	} catch (YAML::Exception& e) {
+		throw ParsingException(dbdir + "/meta.yml", e.mark.line, e.mark.column, e.msg);
 	}
 
-	if (!meta["files"].IsSequence())
-		throw std::runtime_error("bad database metadata format (files should be a sequence)");
-
-	for (const auto& file : meta["files"])
-		LoadFile(path, file.Scalar());
+	for (const auto& file : files_to_load) {
+		try {
+			LoadFile(dbdir + "/" + file);
+		} catch (YAML::Exception& e) {
+			throw ParsingException(dbdir + "/" + file, e.mark.line, e.mark.column, e.msg);
+		}
+	}
 }
 
 Result Database::GetAll() const {

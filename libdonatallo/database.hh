@@ -48,12 +48,13 @@ public:
 private:
 	std::vector<Project> projects_;
 
-	void LoadFile(const std::string& path, const std::string& filename);
+	void LoadFile(const std::string& path);
+	void LoadMeta(const std::string& path, std::vector<std::string>& files_to_load);
 
 public:
 	Database();
 
-	void Load(const std::string& path);
+	void Load(const std::string& dbdir);
 
 	Result GetAll() const;
 	Result Query(const DetectorChain& detectors) const;

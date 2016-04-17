@@ -3,6 +3,7 @@
 #include <libdonatallo/detectorchain.hh>
 #include <libdonatallo/detectors/alwaysdetector.hh>
 #include <libdonatallo/detectors/opsysdetector.hh>
+#include <libdonatallo/detectors/packagedetector.hh>
 
 #include "testing.h"
 
@@ -69,6 +70,24 @@ BEGIN_TEST(int, char*[])
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "opsys");
+		}
+	}
+
+	{
+		// PackageDetector should at least find cmake
+		DetectorChain detectors;
+
+		detectors.Append<PackageDetector>();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_EQUAL(res.size(), 1);
+
+		if (res.size() >= 1) {
+			EXPECT_EQUAL(res[0].name, "cmake");
 		}
 	}
 

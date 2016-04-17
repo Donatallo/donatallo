@@ -54,7 +54,7 @@ bool ProcessReader::Run(const std::string& commandline) {
 					}
 					break;
 				default:
-					current += ch;
+					current += *ch;
 					break;
 				}
 			}

@@ -17,6 +17,7 @@ Support for different OS, distros and packaging systems is in
 development, for now we support:
 
 * FreeBSD (pkg)
+* Ubuntu/Debian (dpkg)
 
 ## Building
 

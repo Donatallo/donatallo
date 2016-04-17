@@ -20,6 +20,7 @@
 #include <libdonatallo/detectors/alwaysdetector.hh>
 
 #include <libdonatallo/project.hh>
+#include <libdonatallo/detectorfactory.hh>
 
 namespace Donatallo {
 
@@ -32,5 +33,7 @@ void AlwaysDetector::Prepare() {
 bool AlwaysDetector::Check(const Project& project) const {
 	return project.detection_tags.find("always") != project.detection_tags.end();
 }
+
+static DetectorFactory::Registrar<AlwaysDetector> registrar;
 
 }

@@ -20,6 +20,7 @@
 #include <libdonatallo/detectors/opsysdetector.hh>
 
 #include <libdonatallo/project.hh>
+#include <libdonatallo/detectorfactory.hh>
 
 namespace Donatallo {
 
@@ -64,5 +65,7 @@ bool OpsysDetector::Check(const Project& project) const {
 
 	return false;
 }
+
+static DetectorFactory::Registrar<OpsysDetector> registrar;
 
 }

@@ -21,6 +21,7 @@
 
 #include <libdonatallo/project.hh>
 #include <libdonatallo/util/processreader.hh>
+#include <libdonatallo/detectorfactory.hh>
 
 namespace Donatallo {
 
@@ -48,5 +49,7 @@ bool PackageDetector::Check(const Project& project) const {
 
 	return false;
 }
+
+static DetectorFactory::Registrar<PackageDetector> registrar;
 
 }

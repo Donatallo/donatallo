@@ -21,6 +21,7 @@
 #define DONATALLO_RESULT_HH
 
 #include <vector>
+#include <cstddef>
 
 namespace Donatallo {
 

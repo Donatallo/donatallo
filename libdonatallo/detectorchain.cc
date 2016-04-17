@@ -25,6 +25,12 @@ namespace Donatallo {
 DetectorChain::DetectorChain() {
 }
 
+DetectorChain::~DetectorChain() {
+}
+
+DetectorChain::DetectorChain(DetectorChain&&) = default;
+DetectorChain& DetectorChain::operator=(DetectorChain&&) = default;
+
 void DetectorChain::Prepare(StatusCallback&& status_callback) {
 	int n = 0;
 

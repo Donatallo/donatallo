@@ -38,6 +38,12 @@ public:
 
 public:
 	DetectorChain();
+	~DetectorChain();
+
+	DetectorChain(const DetectorChain&) = delete;
+	DetectorChain(DetectorChain&&);
+	DetectorChain& operator=(const DetectorChain&) = delete;
+	DetectorChain& operator=(DetectorChain&&);
 
 	template<class T>
 	void Append() {

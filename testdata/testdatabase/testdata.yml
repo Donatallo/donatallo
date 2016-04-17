@@ -7,8 +7,7 @@
     - type: url
       url: http://never/donate
 
-# some fake application entries; should always be detected as
-# donatallo is built with cmake and uses yaml-cpp
+# fake application entry to test with package detector
 - name: cmake
   description: cmake description
   url: http://cmake
@@ -18,16 +17,6 @@
   detection:
     pkgnames:
       - cmake
-
-- name: yaml-cpp
-  description: yaml-cpp description
-  url: http://yaml-cpp
-  donations:
-    - type: url
-      url: http://yaml-cpp/donate
-  detection:
-    pkgnames:
-      - yaml-cpp
 
 # always matching entries
 - name: always

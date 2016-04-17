@@ -17,7 +17,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_TRUE(res.size() == 5);
+		EXPECT_TRUE(res.size() == 4);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");

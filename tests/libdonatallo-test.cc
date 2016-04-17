@@ -4,6 +4,7 @@
 #include <libdonatallo/detectors/alwaysdetector.hh>
 #include <libdonatallo/detectors/opsysdetector.hh>
 #include <libdonatallo/detectors/packagedetector.hh>
+#include <libdonatallo/detectorfactory.hh>
 
 #include "testing.h"
 
@@ -91,4 +92,15 @@ BEGIN_TEST(int, char*[])
 		}
 	}
 
+	{
+		// Try all available detectors
+		DetectorChain detectors = DetectorFactory::GetInstance()->GetAllDetectors();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_TRUE(res.size() >= 2); // always + cmake
+	}
 END_TEST()

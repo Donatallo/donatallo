@@ -6,7 +6,12 @@ compiler:
   - clang
 before_install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq cmake libyaml-cpp-dev libboost-dev # boost is needed as depend for libyaml-cpp, as ubuntu package misses needed dependency. See https://bugs.launchpad.net/ubuntu/+source/yaml-cpp/+bug/1318940
+  # libyaml-cpp package is terminally outdated so it is installed manually
+  # boost is needed as depend for libyaml-cpp, as ubuntu package misses needed dependency. See https://bugs.launchpad.net/ubuntu/+source/yaml-cpp/+bug/1318940
+  - sudo apt-get install -qq cmake libboost-dev
+  - git clone --depth=1 --branch=release-0.5.3 https://github.com/jbeder/yaml-cpp.git
+  - cd yaml-cpp && cmake -DYAML_CPP_BUILD_TOOLS=OFF -DYAML_CPP_BUILD_CONTRIB=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr . && make -j2 && sudo make install
+  - cd ${TRAVIS_BUILD_DIR}
 script:
   - cmake .
   - VERBOSE=1 make

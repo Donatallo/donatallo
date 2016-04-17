@@ -8,8 +8,8 @@ of FLOSS projects accepting donations, and the application (this
 repository) which determines which projects are relevant to you and
 allows to donate in an easy way.
 
-**NOTE** that Donatallo **does not** accept or process any funds
-itself. We only point you to upstream donation metods.
+Note that Donatallo **does not** accept or process any funds itself.
+We only point you to upstream donation options.
 
 ## OS support
 
@@ -22,8 +22,8 @@ development, for now we support:
 
 Dependencies:
 
-* [yaml-cpp](https://github.com/jbeder/yaml-cpp) 0.5.3 or later
 * [CMake](http://www.cmake.org/)
+* [yaml-cpp](https://github.com/jbeder/yaml-cpp) 0.5.3 or later
 
 To build the project, run:
 

@@ -20,6 +20,7 @@
 #include <libdonatallo/detectors/packagedetector.hh>
 
 #include <libdonatallo/project.hh>
+#include <libdonatallo/util/processreader.hh>
 
 namespace Donatallo {
 
@@ -27,9 +28,24 @@ PackageDetector::~PackageDetector() {
 }
 
 void PackageDetector::Prepare() {
+	ProcessReader proc;
+	if (proc.Run(DONATALLO_DATADIR "/scripts/list-packages.sh")) {
+		for (const auto& package : proc.GetOutput())
+			packages_.insert(package);
+	}
 }
 
 bool PackageDetector::Check(const Project& project) const {
+	const auto tag = project.detection_tags.find("pkgnames");
+
+	if (tag == project.detection_tags.end())
+		return false;
+
+	for (const auto& keyword : tag->second) {
+		if (packages_.find(keyword) != packages_.end())
+			return true;
+	}
+
 	return false;
 }
 

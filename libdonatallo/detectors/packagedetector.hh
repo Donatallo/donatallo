@@ -20,6 +20,9 @@
 #ifndef DONATALLO_PACKAGEDETECTOR_HH
 #define DONATALLO_PACKAGEDETECTOR_HH
 
+#include <unordered_set>
+#include <string>
+
 #include <libdonatallo/detector.hh>
 
 namespace Donatallo {
@@ -27,6 +30,9 @@ namespace Donatallo {
 class Project;
 
 class PackageDetector : public Detector {
+private:
+	std::unordered_set<std::string> packages_;
+
 public:
 	virtual ~PackageDetector();
 

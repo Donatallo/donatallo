@@ -74,6 +74,7 @@ BEGIN_TEST(int, char*[])
 		}
 	}
 
+#if !defined(WIN32)
 	{
 		// PackageDetector should at least find cmake
 		DetectorChain detectors;
@@ -91,6 +92,7 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(res[0].name, "cmake");
 		}
 	}
+#endif
 
 	{
 		// Try all available detectors
@@ -101,6 +103,10 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(detectors);
 
 		EXPECT_TRUE(!res.empty());
+#if !defined(WIN32)
 		EXPECT_TRUE(res.size() >= 2); // always + cmake
+#else
+		EXPECT_TRUE(res.size() >= 1); // always
+#endif
 	}
 END_TEST()

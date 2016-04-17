@@ -2,6 +2,7 @@
 #include <libdonatallo/result.hh>
 #include <libdonatallo/detectorchain.hh>
 #include <libdonatallo/detectors/alwaysdetector.hh>
+#include <libdonatallo/detectors/opsysdetector.hh>
 
 #include "testing.h"
 
@@ -16,7 +17,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_TRUE(res.size() == 4);
+		EXPECT_TRUE(res.size() == 5);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");
@@ -50,6 +51,24 @@ BEGIN_TEST(int, char*[])
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "always");
+		}
+	}
+
+	{
+		// OpsysDetector should match host environment
+		DetectorChain detectors;
+
+		detectors.Append<OpsysDetector>();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_EQUAL(res.size(), 1);
+
+		if (res.size() >= 1) {
+			EXPECT_EQUAL(res[0].name, "opsys");
 		}
 	}
 

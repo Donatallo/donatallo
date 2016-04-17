@@ -5,6 +5,7 @@ SET(LIBDONATALLO_SOURCES
 	detector.cc
 	detectorchain.cc
 	detectors/alwaysdetector.cc
+	detectors/opsysdetector.cc
 	result.cc
 )
 
@@ -14,6 +15,7 @@ SET(LIBDONATALLO_HEADERS
 	detectorchain.hh
 	detectorfactory.hh
 	detectors/alwaysdetector.hh
+	detectors/opsysdetector.hh
 	project.hh
 	result.hh
 )

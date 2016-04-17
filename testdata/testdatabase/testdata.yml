@@ -38,3 +38,18 @@
       url: http://always/donate
   detection:
     always: ""
+
+# opsys matching entries
+- name: opsys
+  description: opsys description
+  url: http://opsys
+  donations:
+    - type: url
+      url: http://opsys/donate
+  detection:
+    opsys:
+      - DragonFly
+      - FreeBSD
+      - Linux
+      - NetBSD
+      - OpenBSD

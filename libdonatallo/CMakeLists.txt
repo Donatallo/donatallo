@@ -4,6 +4,7 @@ SET(LIBDONATALLO_SOURCES
 	database.cc
 	detector.cc
 	detectorchain.cc
+	detectorfactory.cc
 	detectors/alwaysdetector.cc
 	detectors/opsysdetector.cc
 	result.cc

@@ -52,7 +52,7 @@ private:
 
 	template<class T>
 	void Register() {
-		appenders_.emplace_back([](DetectorChain& chain){ chain.Append<T>() });
+		appenders_.emplace_back([](DetectorChain& chain){ chain.Append<T>(); });
 	}
 
 public:
@@ -60,5 +60,7 @@ public:
 
 	DetectorChain GetAllDetectors() const;
 };
+
+}
 
 #endif

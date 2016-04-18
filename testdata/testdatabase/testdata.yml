@@ -3,17 +3,17 @@
 - name: never
   comment: never comment
   url: http://never
-  donations:
-    - type: url
-      url: http://never/donate
+  donations: http://never/donate
+  methods:
+    - bitcoin
 
 # fake application entry to test with package detector
 - name: cmake
   comment: cmake comment
   url: http://cmake
-  donations:
-    - type: url
-      url: http://cmake/donate
+  donations: http://cmake/donate
+  methods:
+    - bitcoin
   detection:
     pkgnames:
       - cmake
@@ -22,18 +22,18 @@
 - name: always_b
   comment: always_b comment
   url: http://always_b
-  donations:
-    - type: url
-      url: http://always_b/donate
+  donations: http://always_b/donate
+  methods:
+    - bitcoin
   detection:
     always: ""
 
 - name: always_a
   comment: always_a comment
   url: http://always_a
-  donations:
-    - type: url
-      url: http://always_a/donate
+  donations: http://always_a/donate
+  methods:
+    - bitcoin
   detection:
     always: ""
 
@@ -41,9 +41,9 @@
 - name: opsys
   comment: opsys comment
   url: http://opsys
-  donations:
-    - type: url
-      url: http://opsys/donate
+  donations: http://opsys/donate
+  methods:
+    - bitcoin
   detection:
     opsys:
       - DragonFly

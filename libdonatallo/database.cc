@@ -119,6 +119,39 @@ void Database::LoadFile(const std::string& path) {
 			}
 		}
 
+		{
+			const auto& donation_url_node = entry["donations"];
+
+			if (!donation_url_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing donation url");
+
+			if (!donation_url_node.IsScalar())
+				throw YAML::Exception(donation_url_node.Mark(), "donation url must be a string");
+
+			proj.donation_url = donation_url_node.as<std::string>();
+		}
+
+		{
+			const auto& methods_node = entry["methods"];
+
+			if (!methods_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing donation methods");
+
+			if (!methods_node.IsSequence())
+				throw YAML::Exception(methods_node.Mark(), "methods must be a sequence");
+
+			for (const auto& method_node : methods_node) {
+				if (!method_node.IsScalar())
+					throw YAML::Exception(method_node.Mark(), "donation method must be a string");
+
+				Project::DonationMethod method = Project::DonationMethodFromKeyword(method_node.as<std::string>());
+				if (method == Project::DonationMethod::UNKNOWN)
+					std::cerr << "Warning: unknown donation method " << method_node.as<std::string>() << std::endl;
+				else
+					proj.donation_methods.insert(method);
+			}
+		}
+
 		projects_.emplace_back(std::move(proj));
 	}
 }

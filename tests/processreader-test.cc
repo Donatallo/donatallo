@@ -22,6 +22,7 @@ BEGIN_TEST(int, char*[])
 	{
 		ProcessReader r;
 
+		// will display error on stderr; this is by design
 		EXPECT_TRUE(!r.RunShell("nonexisting-fake-command-2348758934"));
 		EXPECT_TRUE(r.GetOutput().empty());
 	}

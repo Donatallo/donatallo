@@ -33,7 +33,7 @@ BEGIN_TEST(int, char*[])
 
 		auto res = r.GetOutput();
 
-		EXPECT_EQUAL(res.size(), 1);
+		EXPECT_EQUAL(res.size(), 1U);
 		EXPECT_TRUE(res.find("test") == res.begin());
 	}
 
@@ -44,7 +44,7 @@ BEGIN_TEST(int, char*[])
 
 		auto res = r.GetOutput();
 
-		EXPECT_EQUAL(res.size(), 2);
+		EXPECT_EQUAL(res.size(), 2U);
 		EXPECT_TRUE(res.find("test1") != res.end());
 		EXPECT_TRUE(res.find("test2") != res.end());
 	}
@@ -56,7 +56,7 @@ BEGIN_TEST(int, char*[])
 
 		auto res = r.GetOutput();
 
-		EXPECT_EQUAL(res.size(), 2);
+		EXPECT_EQUAL(res.size(), 2U);
 		EXPECT_TRUE(res.find("test1") != res.end());
 		EXPECT_TRUE(res.find("test2") != res.end());
 	}

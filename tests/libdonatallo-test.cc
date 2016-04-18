@@ -35,7 +35,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(emptychain);
 
 		EXPECT_TRUE(res.empty());
-		EXPECT_EQUAL(res.size(), 0);
+		EXPECT_EQUAL(res.size(), 0U);
 	}
 
 	{
@@ -49,7 +49,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(detectors);
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_EQUAL(res.size(), 1);
+		EXPECT_EQUAL(res.size(), 1U);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "always");
@@ -67,7 +67,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(detectors);
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_EQUAL(res.size(), 1);
+		EXPECT_EQUAL(res.size(), 1U);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "opsys");
@@ -86,7 +86,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(detectors);
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_EQUAL(res.size(), 1);
+		EXPECT_EQUAL(res.size(), 1U);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "cmake");

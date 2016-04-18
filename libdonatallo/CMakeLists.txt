@@ -9,6 +9,7 @@ SET(LIBDONATALLO_SOURCES
 	detectorfactory.cc
 	detectors/alwaysdetector.cc
 	detectors/opsysdetector.cc
+	project.cc
 	result.cc
 )
 

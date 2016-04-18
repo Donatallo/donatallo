@@ -21,6 +21,7 @@
 #define DONATALLO_PROJECT_HH
 
 #include <string>
+#include <set>
 #include <map>
 #include <vector>
 
@@ -30,14 +31,35 @@ class DonationVisitor;
 
 class Project {
 public:
+	enum class DonationMethod {
+		PAYPAL,
+		BITCOIN,
+		BANK_TRANSFER,
+		YANDEX_MONEY,
+		FLATTR,
+		CLICKANDPLEDGE,
+
+		UNKNOWN,
+	};
+
+public:
+	static DonationMethod DonationMethodFromKeyword(const std::string& method);
+	static std::string DonationMethodToHumanReadable(DonationMethod method);
+
+public:
 	typedef std::vector<std::string> DetectionTagVector;
 	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
+	typedef std::set<DonationMethod> DetectionMethodsSet;
 
+public:
 	std::string name;
 	std::string comment;
 	std::string url;
 
 	DetectionTagMap detection_tags;
+
+	std::string donation_url;
+	DetectionMethodsSet donation_methods;
 };
 
 }

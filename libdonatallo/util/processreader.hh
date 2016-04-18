@@ -36,6 +36,9 @@ private:
 
 private:
 	static StringVector ReadAllWords(int fd);
+	std::pair<pid_t, int> ForkChild(const char* path, char* const* argv);
+	static int WaitForPid(pid_t pid);
+
 	bool Run(const char* path, char* const* argv);
 
 public:

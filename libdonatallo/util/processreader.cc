@@ -67,7 +67,7 @@ ProcessReader::StringVector ProcessReader::ReadAllWords(int fd) {
 	return strings;
 }
 
-bool ProcessReader::Run(const char* path, char* const* argv) {
+std::pair<pid_t, int> ProcessReader::ForkChild(const char* path, char* const* argv) {
 	int pipefd[2];
 
 	// pipe
@@ -96,26 +96,46 @@ bool ProcessReader::Run(const char* path, char* const* argv) {
 	// parent
 	close(pipefd[1]);
 
+	return std::make_pair(childpid, pipefd[0]);
+}
+
+int ProcessReader::WaitForPid(pid_t pid) {
+	int status;
+
+	while (1) {
+		if (waitpid(pid, &status, 0) == -1) {
+			if (errno == EINTR) // interrupted system call
+				continue;
+			else // error
+				throw std::system_error(errno, std::system_category());
+		}
+
+		// only want process termination statuses
+		if (WIFEXITED(status) || WIFSIGNALED(status))
+			return WEXITSTATUS(status);
+	}
+}
+
+bool ProcessReader::Run(const char* path, char* const* argv) {
+	int readfd;
+	pid_t childpid;
+	std::tie(childpid, readfd) = ForkChild(path, argv);
+
 	StringVector temp;
 
 	try {
-		temp = ReadAllWords(pipefd[0]);
+		temp = ReadAllWords(readfd);
 	} catch (...) {
-		int status;
-		waitpid(childpid, &status, WEXITED);
-		close(pipefd[0]);
+		WaitForPid(childpid);
+		close(readfd);
 		throw;
 	}
 
-	close(pipefd[0]);
+	close(readfd);
 
-	int status;
-	if (waitpid(childpid, &status, WEXITED) == -1)
-		throw std::system_error(errno, std::system_category());
-
-	if (WEXITSTATUS(status) == 0) {
-		for (const auto& str : temp)
-			output_.insert(str);
+	if (WaitForPid(childpid) == 0) {
+		for (const auto& word : temp)
+			output_.insert(word);
 		return true;
 	}
 

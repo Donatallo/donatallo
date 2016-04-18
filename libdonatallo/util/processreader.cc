@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #include <system_error>
 
@@ -89,6 +90,11 @@ std::pair<pid_t, int> ProcessReader::ForkChild(const char* path, char* const* ar
 		dup2(pipefd[1], STDOUT_FILENO);
 		for (int fd = 3; fd < getdtablesize(); fd++)
 			close(fd);
+
+		sigset_t mask;
+		sigfillset(&mask);
+		sigprocmask(SIG_UNBLOCK, &mask, nullptr);
+
 		execv(path, argv);
 		exit(1); // if exec fails
 	}

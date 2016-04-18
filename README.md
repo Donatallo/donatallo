@@ -11,6 +11,15 @@ allows to donate in an easy way.
 Note that Donatallo **does not** accept or process any funds itself.
 We only point you to upstream donation options.
 
+## Frontends
+
+For now only proof of concept command line application is provided,
+```donatallo-cli```.
+
+Run ```donatallo-cli -a``` to list all projects available in the
+donatallo database, or ```donatallo-cli``` to list only projects
+detected on your system.
+
 ## OS support
 
 Support for different OS, distros and packaging systems is in

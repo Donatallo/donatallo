@@ -37,6 +37,7 @@ INCLUDE_DIRECTORIES(BEFORE .)
 
 # subdirectories
 ADD_SUBDIRECTORY(libdonatallo)
+ADD_SUBDIRECTORY(donatallo-cli)
 
 ENABLE_TESTING()
 ADD_SUBDIRECTORY(tests)

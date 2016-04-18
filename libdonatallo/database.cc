@@ -152,7 +152,6 @@ void Database::LoadMeta(const std::string& path, std::vector<std::string>& files
 
 		int major = std::stoi(version.substr(0, dot1pos));
 		int minor = std::stoi(version.substr(dot1pos + 1, dot2pos - dot1pos - 1));
-		int patch = std::stoi(version.substr(dot2pos + 1));
 
 		if (major > my_major)
 			throw std::runtime_error("database major version too new, not supported; please update donatallo");

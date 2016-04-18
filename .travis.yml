@@ -1,9 +1,11 @@
 language: cpp
 sudo: required
 dist: trusty
-compiler:
-  - gcc
-  - clang
+matrix:
+  include:
+    - compiler: gcc
+      env: BUILD_COVERAGE=yes
+    - compiler: clang
 before_install:
   - sudo apt-get update -qq
   # libyaml-cpp package is terminally outdated so it is installed manually
@@ -12,8 +14,17 @@ before_install:
   - git clone --depth=1 --branch=release-0.5.3 https://github.com/jbeder/yaml-cpp.git
   - cd yaml-cpp && cmake -DYAML_CPP_BUILD_TOOLS=OFF -DYAML_CPP_BUILD_CONTRIB=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr . && make -j2 && sudo make install
   - cd ${TRAVIS_BUILD_DIR}
+  - |-
+    if [ -n "${BUILD_COVERAGE}" ]; then
+        export CMAKE_EXTRA_ARGS="${CMAKE_EXTRA_ARGS} -DCMAKE_BUILD_TYPE=Coverage"
+        pip install --user pyyaml cpp-coveralls
+    fi
+
 script:
-  - cmake -DCMAKE_CXX_FLAGS=-Werror .
+  - cmake -DCMAKE_CXX_FLAGS=-Werror ${CMAKE_EXTRA_ARGS} .
   - VERBOSE=1 make
   - make ARGS=-V test || true # some tests intentionally fail for now
   - cppcheck -I . --enable=all --error-exitcode=2 libdonatallo tests
+
+after_success:
+  - if [ -n "${BUILD_COVERAGE}" ]; then coveralls -i libdonatallo; fi

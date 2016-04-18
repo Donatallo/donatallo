@@ -23,7 +23,7 @@ BEGIN_TEST(int, char*[])
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");
-			EXPECT_EQUAL(res[0].description, "never description");
+			EXPECT_EQUAL(res[0].comment, "never comment");
 			EXPECT_EQUAL(res[0].url, "http://never");
 		}
 	}

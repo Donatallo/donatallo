@@ -34,7 +34,7 @@ public:
 	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
 
 	std::string name;
-	std::string description;
+	std::string comment;
 	std::string url;
 
 	DetectionTagMap detection_tags;

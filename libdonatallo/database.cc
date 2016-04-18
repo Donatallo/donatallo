@@ -75,15 +75,15 @@ void Database::LoadFile(const std::string& path) {
 		}
 
 		{
-			const auto& desc_node = entry["description"];
+			const auto& comment_node = entry["comment"];
 
-			if (!desc_node.IsDefined())
-				throw YAML::Exception(entry.Mark(), "missing description");
+			if (!comment_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing comment");
 
-			if (!desc_node.IsScalar())
-				throw YAML::Exception(desc_node.Mark(), "description must be a string");
+			if (!comment_node.IsScalar())
+				throw YAML::Exception(comment_node.Mark(), "comment must be a string");
 
-			proj.description = desc_node.as<std::string>();
+			proj.comment = comment_node.as<std::string>();
 		}
 
 		{

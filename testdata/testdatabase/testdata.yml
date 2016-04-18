@@ -1,7 +1,7 @@
 ---
 # never matching entry
 - name: never
-  description: never description
+  comment: never comment
   url: http://never
   donations:
     - type: url
@@ -9,7 +9,7 @@
 
 # fake application entry to test with package detector
 - name: cmake
-  description: cmake description
+  comment: cmake comment
   url: http://cmake
   donations:
     - type: url
@@ -20,7 +20,7 @@
 
 # always matching entries
 - name: always
-  description: always description
+  comment: always comment
   url: http://always
   donations:
     - type: url
@@ -30,7 +30,7 @@
 
 # opsys matching entries
 - name: opsys
-  description: opsys description
+  comment: opsys comment
   url: http://opsys
   donations:
     - type: url

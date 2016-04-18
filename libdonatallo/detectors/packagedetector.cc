@@ -30,7 +30,7 @@ PackageDetector::~PackageDetector() {
 
 void PackageDetector::Prepare() {
 	ProcessReader proc;
-	if (proc.Run(DONATALLO_DATADIR "/scripts/list-packages.sh")) {
+	if (proc.RunScript(DONATALLO_DATADIR "/scripts/list-packages.sh")) {
 		for (const auto& package : proc.GetOutput())
 			packages_.insert(package);
 	}

@@ -19,58 +19,120 @@
 
 #include <libdonatallo/util/processreader.hh>
 
-#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+#include <system_error>
 
 namespace Donatallo {
 
 ProcessReader::ProcessReader() {
 }
 
-bool ProcessReader::Run(const std::string& commandline) {
-	FILE *f = popen(commandline.c_str(), "r");
-	if (f == nullptr)
-		return false;
-
-	static constexpr size_t bufsize = 65536;
-
-	char buffer[bufsize];
+ProcessReader::StringVector ProcessReader::ReadAllWords(int fd) {
+	char buffer[65536];
 
 	std::string current;
 
-	try {
-		while (1) {
-			size_t nread = fread(buffer, 1, bufsize, f);
-			if (nread == 0 && feof(f))
-				break;
-			else if (nread == 0)
-				throw std::runtime_error("error reading from process");
+	StringVector strings;
 
-			for (char* ch = buffer; ch != buffer + nread; ch++) {
-				switch (*ch) {
-				case ' ': case '\n': case '\t': case '\r':
-					if (!current.empty()) {
-						output_.insert(current);
-						current.clear();
-					}
-					break;
-				default:
-					current += *ch;
-					break;
+	while (1) {
+		ssize_t nread = read(fd, buffer, sizeof(buffer));
+		if (nread == 0) // eof
+			break;
+		else if (nread == -1 && errno == EINTR) // interrupted system call
+			continue;
+		else if (nread == -1) // read error
+			throw std::system_error(errno, std::system_category());
+
+		for (char* ch = buffer; ch != buffer + nread; ch++) {
+			switch (*ch) {
+			case ' ': case '\n': case '\t': case '\r':
+				if (!current.empty()) {
+					strings.push_back(current);
+					current.clear();
 				}
+				break;
+			default:
+				current += *ch;
+				break;
 			}
 		}
+	}
 
-		if (!current.empty())
-			output_.insert(current);
+	if (!current.empty())
+		strings.push_back(current);
+
+	return strings;
+}
+
+bool ProcessReader::Run(const char* path, char* const* argv) {
+	int pipefd[2];
+
+	// pipe
+	if (pipe(pipefd) != 0)
+		throw std::system_error(errno, std::system_category());
+
+	// fork
+	pid_t childpid = fork();
+	if (childpid == -1) {
+		int saved_errno = errno;
+		close(pipefd[0]);
+		close(pipefd[1]);
+		throw std::system_error(saved_errno, std::system_category());
+	}
+
+	if (childpid == 0) {
+		// child
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
+		for (int fd = 3; fd < getdtablesize(); fd++)
+			close(fd);
+		execv(path, argv);
+		exit(1); // if exec fails
+	}
+
+	// parent
+	close(pipefd[1]);
+
+	StringVector temp;
+
+	try {
+		temp = ReadAllWords(pipefd[0]);
 	} catch (...) {
-		pclose(f);
+		int status;
+		waitpid(childpid, &status, WEXITED);
+		close(pipefd[0]);
 		throw;
 	}
 
-	return pclose(f) != -1;
+	close(pipefd[0]);
+
+	int status;
+	if (waitpid(childpid, &status, WEXITED) == -1)
+		throw std::system_error(errno, std::system_category());
+
+	if (WEXITSTATUS(status) == 0) {
+		for (const auto& str : temp)
+			output_.insert(str);
+		return true;
+	}
+
+	return false;
 }
 
-const ProcessReader::ResultsSet& ProcessReader::GetOutput() const {
+bool ProcessReader::RunScript(const std::string& path) {
+	const char* const argv[] = { "/bin/sh", path.c_str(), nullptr };
+	return Run("/bin/sh", const_cast<char* const*>(argv));
+}
+
+bool ProcessReader::RunShell(const std::string& commandline) {
+	const char* const argv[] = { "/bin/sh", "-c", commandline.c_str(), nullptr };
+	return Run("/bin/sh", const_cast<char* const*>(argv));
+}
+
+const ProcessReader::StringSet& ProcessReader::GetOutput() const {
 	return output_;
 }
 

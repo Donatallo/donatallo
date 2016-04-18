@@ -21,23 +21,30 @@
 #define DONATALLO_PROCESSREADER_HH
 
 #include <unordered_set>
+#include <vector>
 #include <string>
 
 namespace Donatallo {
 
 class ProcessReader {
 public:
-	typedef std::unordered_set<std::string> ResultsSet;
+	typedef std::vector<std::string> StringVector;
+	typedef std::unordered_set<std::string> StringSet;
 
 private:
-	ResultsSet output_;
+	StringSet output_;
+
+private:
+	static StringVector ReadAllWords(int fd);
+	bool Run(const char* path, char* const* argv);
 
 public:
 	ProcessReader();
 
-	bool Run(const std::string& commandline);
+	bool RunScript(const std::string& path);
+	bool RunShell(const std::string& commandline);
 
-	const ResultsSet& GetOutput() const;
+	const StringSet& GetOutput() const;
 };
 
 }

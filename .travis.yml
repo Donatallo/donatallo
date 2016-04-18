@@ -13,7 +13,7 @@ before_install:
   - cd yaml-cpp && cmake -DYAML_CPP_BUILD_TOOLS=OFF -DYAML_CPP_BUILD_CONTRIB=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr . && make -j2 && sudo make install
   - cd ${TRAVIS_BUILD_DIR}
 script:
-  - cmake .
+  - cmake -DCMAKE_CXX_FLAGS=-Werror .
   - VERBOSE=1 make
   - make ARGS=-V test || true # some test intentionally fail for now
 # - cppcheck -I . --enable=performance,portability,information,missingInclude --error-exitcode=2 SDL2pp # `style' gives false positive in cppcheck 1.61 which comes with trusty

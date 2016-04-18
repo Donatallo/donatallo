@@ -54,6 +54,11 @@ BEGIN_TEST(int, char*[])
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "always");
 		}
+
+		// check iteration
+		for (auto& project : res) {
+			EXPECT_EQUAL(project.name, "always");
+		}
 	}
 
 	{

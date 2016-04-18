@@ -1,0 +1,3 @@
+[submodule "data/database"]
+	path = data/database
+	url = https://github.com/Donatallo/donatallo-database.git

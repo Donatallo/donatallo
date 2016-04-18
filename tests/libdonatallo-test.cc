@@ -98,7 +98,24 @@ BEGIN_TEST(int, char*[])
 		// Try all available detectors
 		DetectorChain detectors = DetectorFactory::GetInstance()->GetAllDetectors();
 
-		detectors.Prepare();
+		{
+			// Check progress reporting:
+#if !defined(WIN32)
+			const int total_detectors = 3;
+#else
+			const int total_detectors = 2;
+#endif
+
+			int had_progress = 0;
+			int had_total = 0;
+			detectors.Prepare([&](int done, int total) {
+					had_progress |= 1 << done;
+					had_total = total;
+				});
+
+			EXPECT_EQUAL(had_progress, (1 << (total_detectors + 1)) - 1);
+			EXPECT_EQUAL(had_total, total_detectors);
+		}
 
 		Result res = db.Query(detectors);
 

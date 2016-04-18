@@ -28,7 +28,8 @@ namespace Donatallo {
 
 class DonationVisitor;
 
-struct Project {
+class Project {
+public:
 	typedef std::vector<std::string> DetectionTagVector;
 	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
 

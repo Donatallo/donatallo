@@ -19,7 +19,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_TRUE(res.size() == 4);
+		EXPECT_TRUE(res.size() == 5);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");
@@ -49,15 +49,34 @@ BEGIN_TEST(int, char*[])
 		Result res = db.Query(detectors);
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_EQUAL(res.size(), 1U);
+		EXPECT_EQUAL(res.size(), 2U);
 
-		if (res.size() >= 1) {
-			EXPECT_EQUAL(res[0].name, "always");
+		if (res.size() == 2) {
+			EXPECT_EQUAL(res[0].name, "always_b");
+			EXPECT_EQUAL(res[1].name, "always_a");
+		}
+
+		auto sort1 = res.SortByName();
+
+		EXPECT_EQUAL(sort1.size(), 2U);
+
+		if (sort1.size() == 2) {
+			EXPECT_EQUAL(sort1[0].name, "always_a");
+			EXPECT_EQUAL(sort1[1].name, "always_b");
+		}
+
+		auto sort2 = res.SortByName(false);
+
+		EXPECT_EQUAL(sort2.size(), 2U);
+
+		if (sort2.size() == 2) {
+			EXPECT_EQUAL(sort2[0].name, "always_b");
+			EXPECT_EQUAL(sort2[1].name, "always_a");
 		}
 
 		// check iteration
 		for (auto& project : res) {
-			EXPECT_EQUAL(project->name, "always");
+			EXPECT_TRUE(project->name == "always_a" || project->name == "always_b");
 		}
 	}
 
@@ -126,9 +145,9 @@ BEGIN_TEST(int, char*[])
 
 		EXPECT_TRUE(!res.empty());
 #if !defined(WIN32)
-		EXPECT_TRUE(res.size() >= 2); // always + cmake
+		EXPECT_TRUE(res.size() >= 3); // always + cmake
 #else
-		EXPECT_TRUE(res.size() >= 1); // always
+		EXPECT_TRUE(res.size() >= 2); // always
 #endif
 	}
 END_TEST()

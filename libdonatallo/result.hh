@@ -29,11 +29,6 @@ class Project;
 
 class Result {
 public:
-	enum class SortCriteria {
-		NAME,
-	};
-
-public:
 	typedef std::vector<const Project*> ProjectVector;
 	typedef ProjectVector::const_iterator const_iterator;
 
@@ -45,7 +40,7 @@ public:
 
 	void Add(const Project* project);
 
-	//Result Sort(SortCriteria criteria = SortCriteria::NAME, bool ascending = true) const;
+	Result SortByName(bool ascending = true) const;
 
 	size_t size() const;
 	bool empty() const;

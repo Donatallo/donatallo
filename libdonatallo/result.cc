@@ -17,7 +17,12 @@
  * along with donatallo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h> // strcasecmp; no simple equivalent in c++
+
+#include <algorithm>
+
 #include <libdonatallo/result.hh>
+#include <libdonatallo/project.hh>
 
 namespace Donatallo {
 
@@ -28,9 +33,21 @@ void Result::Add(const Project* project) {
 	results_.push_back(project);
 }
 
-//Result Result::Sort(SortCriteria criteria = SortCriteria::NAME, bool ascending = true) const {
-//	return this;
-//}
+Result Result::SortByName(bool ascending) const {
+	Result result = *this;
+
+	std::sort(result.results_.begin(), result.results_.end(),
+		ascending ?
+			[](const Project* a, const Project* b) {
+				return strcasecmp(a->name.c_str(), b->name.c_str()) < 0;
+			} :
+			[](const Project* a, const Project* b) {
+				return strcasecmp(a->name.c_str(), b->name.c_str()) > 0;
+			}
+	);
+
+	return result;
+}
 
 size_t Result::size() const {
 	return results_.size();

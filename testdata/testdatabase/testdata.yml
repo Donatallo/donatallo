@@ -19,12 +19,21 @@
       - cmake
 
 # always matching entries
-- name: always
-  comment: always comment
-  url: http://always
+- name: always_b
+  comment: always_b comment
+  url: http://always_b
   donations:
     - type: url
-      url: http://always/donate
+      url: http://always_b/donate
+  detection:
+    always: ""
+
+- name: always_a
+  comment: always_a comment
+  url: http://always_a
+  donations:
+    - type: url
+      url: http://always_a/donate
   detection:
     always: ""
 

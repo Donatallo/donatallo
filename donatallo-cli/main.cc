@@ -88,6 +88,8 @@ int main(int argc, char** argv) try {
 		projects = db.Query(detectors);
 	}
 
+	projects = projects.SortByName();
+
 	// Display
 	int num = 1;
 	for (const auto& project : projects) {

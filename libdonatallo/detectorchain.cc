@@ -41,7 +41,7 @@ void DetectorChain::Prepare(StatusCallback&& status_callback) {
 		detector->Prepare();
 
 		if (status_callback)
-			status_callback(n++, detectors_.size());
+			status_callback(++n, detectors_.size());
 	}
 }
 

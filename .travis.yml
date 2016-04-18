@@ -8,12 +8,12 @@ before_install:
   - sudo apt-get update -qq
   # libyaml-cpp package is terminally outdated so it is installed manually
   # boost is needed as depend for libyaml-cpp, as ubuntu package misses needed dependency. See https://bugs.launchpad.net/ubuntu/+source/yaml-cpp/+bug/1318940
-  - sudo apt-get install -qq cmake libboost-dev
+  - sudo apt-get install -qq cmake libboost-dev cppcheck
   - git clone --depth=1 --branch=release-0.5.3 https://github.com/jbeder/yaml-cpp.git
   - cd yaml-cpp && cmake -DYAML_CPP_BUILD_TOOLS=OFF -DYAML_CPP_BUILD_CONTRIB=OFF -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr . && make -j2 && sudo make install
   - cd ${TRAVIS_BUILD_DIR}
 script:
   - cmake -DCMAKE_CXX_FLAGS=-Werror .
   - VERBOSE=1 make
-  - make ARGS=-V test || true # some test intentionally fail for now
-# - cppcheck -I . --enable=performance,portability,information,missingInclude --error-exitcode=2 SDL2pp # `style' gives false positive in cppcheck 1.61 which comes with trusty
+  - make ARGS=-V test || true # some tests intentionally fail for now
+  - cppcheck -I . --enable=all --error-exitcode=2 libdonatallo tests

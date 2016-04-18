@@ -1,5 +1,3 @@
-PROJECT(Donatallo)
-
 # sources
 SET(DONATALLO_CLI_SOURCES
 	main.cc

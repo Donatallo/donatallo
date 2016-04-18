@@ -21,9 +21,10 @@ before_install:
     fi
 
 script:
-  - cmake -DCMAKE_CXX_FLAGS=-Werror ${CMAKE_EXTRA_ARGS} .
+  - cmake -DCMAKE_CXX_FLAGS=-Werror -DCMAKE_INSTALL_PREFIX=prefix ${CMAKE_EXTRA_ARGS} .
   - VERBOSE=1 make && make ARGS=-V test
   - cppcheck -I . --enable=all --error-exitcode=2 libdonatallo donatallo-cli tests
+  - donatallo-cli/donatallo-cli
 
 after_success:
   - if [ -n "${BUILD_COVERAGE}" ]; then coveralls -i libdonatallo; fi

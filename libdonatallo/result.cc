@@ -44,20 +44,20 @@ const Project& Result::operator[](size_t pos) const {
 	return *results_[pos];
 }
 
-const Project* Result::begin() const {
-	return *results_.cbegin();
+Result::const_iterator Result::begin() const {
+	return results_.cbegin();
 }
 
-const Project* Result::cbegin() const {
-	return *results_.cbegin();
+Result::const_iterator Result::end() const {
+	return results_.cend();
 }
 
-const Project* Result::end() const {
-	return *results_.cend();
+Result::const_iterator Result::cbegin() const {
+	return results_.cbegin();
 }
 
-const Project* Result::cend() const {
-	return *results_.cend();
+Result::const_iterator Result::cend() const {
+	return results_.cend();
 }
 
 }

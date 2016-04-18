@@ -57,7 +57,7 @@ BEGIN_TEST(int, char*[])
 
 		// check iteration
 		for (auto& project : res) {
-			EXPECT_EQUAL(project.name, "always");
+			EXPECT_EQUAL(project->name, "always");
 		}
 	}
 

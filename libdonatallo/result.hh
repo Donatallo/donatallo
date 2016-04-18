@@ -33,8 +33,12 @@ public:
 		NAME,
 	};
 
+public:
+	typedef std::vector<const Project*> ProjectVector;
+	typedef ProjectVector::const_iterator const_iterator;
+
 private:
-	std::vector<const Project*> results_;
+	ProjectVector results_;
 
 public:
 	Result();
@@ -47,10 +51,11 @@ public:
 	bool empty() const;
 	const Project& operator[](size_t pos) const;
 
-	const Project* begin() const;
-	const Project* cbegin() const;
-	const Project* end() const;
-	const Project* cend() const;
+	const_iterator begin() const;
+	const_iterator end() const;
+
+	const_iterator cbegin() const;
+	const_iterator cend() const;
 };
 
 }

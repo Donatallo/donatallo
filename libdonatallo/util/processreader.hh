@@ -20,6 +20,8 @@
 #ifndef DONATALLO_PROCESSREADER_HH
 #define DONATALLO_PROCESSREADER_HH
 
+#include <sys/types.h> // for pid_t
+
 #include <unordered_set>
 #include <vector>
 #include <string>

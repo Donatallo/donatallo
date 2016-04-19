@@ -52,6 +52,12 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::AMAZON;
 	if (method == "credit_card")
 		return DonationMethod::CREDIT_CARD;
+	if (method == "hardware")
+		return DonationMethod::HARDWARE;
+	if (method == "stripe")
+		return DonationMethod::STRIPE;
+	if (method == "pledgie")
+		return DonationMethod::PLEDGIE;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -85,6 +91,12 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "amazon";
 	case DonationMethod::CREDIT_CARD:
 		return "credit_card";
+	case DonationMethod::HARDWARE:
+		return "hardware";
+	case DonationMethod::STRIPE:
+		return "stripe";
+	case DonationMethod::PLEDGIE:
+		return "pledgie";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -120,6 +132,12 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Amazon Payments";
 	case DonationMethod::CREDIT_CARD:
 		return "Credit Card";
+	case DonationMethod::HARDWARE:
+		return "Hardware donation";
+	case DonationMethod::STRIPE:
+		return "Stripe";
+	case DonationMethod::PLEDGIE:
+		return "Pledgie";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -135,10 +153,13 @@ void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handle
 	handler(DonationMethod::CREDIT_CARD);
 	handler(DonationMethod::DWOLLA);
 	handler(DonationMethod::FLATTR);
+	handler(DonationMethod::HARDWARE);
 	handler(DonationMethod::LITECOIN);
 	handler(DonationMethod::MERCHANDISE);
 	handler(DonationMethod::PATREON);
 	handler(DonationMethod::PAYPAL);
+	handler(DonationMethod::PLEDGIE);
+	handler(DonationMethod::STRIPE);
 	handler(DonationMethod::YANDEX_MONEY);
 }
 

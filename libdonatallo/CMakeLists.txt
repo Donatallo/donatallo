@@ -29,12 +29,14 @@ IF(UNIX)
 		util/processreader.cc
 		detectors/fileinetcdetector.cc
 		detectors/packagedetector.cc
+		detectors/unamesdetector.cc
 	)
 
 	SET(LIBDONATALLO_HEADERS ${LIBDONATALLO_HEADERS}
 		util/processreader.hh
 		detectors/fileinetcdetector.hh
 		detectors/packagedetector.hh
+		detectors/unamesdetector.hh
 	)
 ENDIF(UNIX)
 

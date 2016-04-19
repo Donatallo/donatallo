@@ -132,7 +132,6 @@ int main(int argc, char** argv) try {
 		projects = projects.FilterByMethods(wanted_methods);
 
 	// Display
-	int num = 1;
 	for (const auto& project : projects) {
 		std::cout << "    Project: " << project->name << std::endl;
 		if (!project->comment.empty())
@@ -148,7 +147,6 @@ int main(int argc, char** argv) try {
 		}
 		std::cout << std::endl;
 		std::cout << std::endl;
-		num++;
 	}
 
 	if (projects.empty())

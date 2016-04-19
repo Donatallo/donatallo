@@ -146,7 +146,7 @@ BEGIN_TEST(int, char*[])
 		{
 			// Check progress reporting:
 #if !defined(WIN32)
-			const int total_detectors = 4;
+			const int total_detectors = 5;
 #else
 			const int total_detectors = 2;
 #endif

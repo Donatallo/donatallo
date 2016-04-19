@@ -30,6 +30,8 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::BITCOIN;
 	if (method == "bank_transfer")
 		return DonationMethod::BANK_TRANSFER;
+	if (method == "cheque")
+		return DonationMethod::CHEQUE;
 	if (method == "yandex_money")
 		return DonationMethod::YANDEX_MONEY;
 	if (method == "flattr")
@@ -47,6 +49,8 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "bitcoin";
 	case DonationMethod::BANK_TRANSFER:
 		return "bank_transfer";
+	case DonationMethod::CHEQUE:
+		return "cheque";
 	case DonationMethod::YANDEX_MONEY:
 		return "yandex_money";
 	case DonationMethod::FLATTR:
@@ -66,6 +70,8 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "BitCoin";
 	case DonationMethod::BANK_TRANSFER:
 		return "Bank transfer";
+	case DonationMethod::CHEQUE:
+		return "Cheque";
 	case DonationMethod::YANDEX_MONEY:
 		return "Yandex.Money";
 	case DonationMethod::FLATTR:
@@ -81,6 +87,7 @@ void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handle
 	handler(DonationMethod::PAYPAL);
 	handler(DonationMethod::BITCOIN);
 	handler(DonationMethod::BANK_TRANSFER);
+	handler(DonationMethod::CHEQUE);
 	handler(DonationMethod::YANDEX_MONEY);
 	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::CLICKANDPLEDGE);

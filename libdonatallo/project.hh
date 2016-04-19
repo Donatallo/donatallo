@@ -35,6 +35,7 @@ public:
 	enum class DonationMethod {
 		BANK_TRANSFER = 0,
 		BITCOIN,
+		CHEQUE,
 		CLICKANDPLEDGE,
 		FLATTR,
 		PAYPAL,

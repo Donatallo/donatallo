@@ -88,6 +88,8 @@ std::pair<pid_t, int> ProcessReader::ForkChild(const char* path, char* const* ar
 		// child
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
+
+		// XXX: slow; use closefrom()
 		for (int fd = 3; fd < getdtablesize(); fd++)
 			close(fd);
 

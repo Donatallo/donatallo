@@ -108,6 +108,8 @@ void Database::LoadFile(const std::string& path) {
 						if (detection.second.IsSequence()) {
 							for (const auto& keyword : detection.second)
 								vec.emplace_back(keyword.as<std::string>());
+						} else if (detection.second.IsScalar()) {
+							vec.emplace_back(detection.second.as<std::string>());
 						}
 
 						proj.detection_tags.emplace(std::make_pair(detection.first.as<std::string>(), std::move(vec)));

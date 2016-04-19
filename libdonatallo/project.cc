@@ -61,7 +61,7 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "clickandpledge";
 	case DonationMethod::MERCHANDISE:
 		return "merchandise";
-	case DonationMethod::UNKNOWN:
+	default:
 		throw std::logic_error("unknown donation method");
 	}
 }
@@ -84,7 +84,7 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Click & Pledge";
 	case DonationMethod::MERCHANDISE:
 		return "Merchandise";
-	case DonationMethod::UNKNOWN:
+	default:
 		throw std::logic_error("unknown donation method");
 	}
 }

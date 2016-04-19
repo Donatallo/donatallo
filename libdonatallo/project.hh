@@ -32,12 +32,12 @@ class DonationVisitor;
 class Project {
 public:
 	enum class DonationMethod {
-		PAYPAL,
+		BANK_TRANSFER = 0,
 		BITCOIN,
-		BANK_TRANSFER,
-		YANDEX_MONEY,
-		FLATTR,
 		CLICKANDPLEDGE,
+		FLATTR,
+		PAYPAL,
+		YANDEX_MONEY,
 
 		UNKNOWN,
 	};

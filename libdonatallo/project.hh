@@ -33,11 +33,13 @@ class DonationVisitor;
 class Project {
 public:
 	enum class DonationMethod {
-		BANK_TRANSFER = 0,
+		AMAZON,
+		BANK_TRANSFER,
 		BITCOIN,
 		BOUNTYSOURCE,
 		CHEQUE,
 		CLICKANDPLEDGE,
+		DWOLLA,
 		FLATTR,
 		LITECOIN,
 		MERCHANDISE,

@@ -49,6 +49,21 @@ Result Result::SortByName(bool ascending) const {
 	return result;
 }
 
+Result Result::FilterByMethods(const std::set<Project::DonationMethod>& what) const {
+	Result result;
+
+	for (const auto& project : results_) {
+		for (const auto& method : project->donation_methods) {
+			if (what.find(method) != what.end()) {
+				result.Add(project);
+				break;
+			}
+		}
+	}
+
+	return result;
+}
+
 size_t Result::size() const {
 	return results_.size();
 }

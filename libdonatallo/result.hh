@@ -23,9 +23,9 @@
 #include <vector>
 #include <cstddef>
 
-namespace Donatallo {
+#include <libdonatallo/project.hh>
 
-class Project;
+namespace Donatallo {
 
 class Result {
 public:
@@ -41,6 +41,7 @@ public:
 	void Add(const Project* project);
 
 	Result SortByName(bool ascending = true) const;
+	Result FilterByMethods(const std::set<Project::DonationMethod>& what) const;
 
 	size_t size() const;
 	bool empty() const;

@@ -38,6 +38,8 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::FLATTR;
 	if (method == "clickandpledge")
 		return DonationMethod::CLICKANDPLEDGE;
+	if (method == "merchandise")
+		return DonationMethod::MERCHANDISE;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -57,6 +59,8 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "flattr";
 	case DonationMethod::CLICKANDPLEDGE:
 		return "clickandpledge";
+	case DonationMethod::MERCHANDISE:
+		return "merchandise";
 	case DonationMethod::UNKNOWN:
 		throw std::logic_error("unknown donation method");
 	}
@@ -78,19 +82,22 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Flattr";
 	case DonationMethod::CLICKANDPLEDGE:
 		return "Click & Pledge";
+	case DonationMethod::MERCHANDISE:
+		return "Merchandise";
 	case DonationMethod::UNKNOWN:
 		throw std::logic_error("unknown donation method");
 	}
 }
 
 void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handler) {
-	handler(DonationMethod::PAYPAL);
-	handler(DonationMethod::BITCOIN);
 	handler(DonationMethod::BANK_TRANSFER);
+	handler(DonationMethod::BITCOIN);
 	handler(DonationMethod::CHEQUE);
-	handler(DonationMethod::YANDEX_MONEY);
-	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::CLICKANDPLEDGE);
+	handler(DonationMethod::FLATTR);
+	handler(DonationMethod::MERCHANDISE);
+	handler(DonationMethod::PAYPAL);
+	handler(DonationMethod::YANDEX_MONEY);
 }
 
 }

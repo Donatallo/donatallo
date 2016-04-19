@@ -50,6 +50,8 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::DWOLLA;
 	if (method == "amazon")
 		return DonationMethod::AMAZON;
+	if (method == "credit_card")
+		return DonationMethod::CREDIT_CARD;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -81,6 +83,8 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "dwolla";
 	case DonationMethod::AMAZON:
 		return "amazon";
+	case DonationMethod::CREDIT_CARD:
+		return "credit_card";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -114,6 +118,8 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Dwolla";
 	case DonationMethod::AMAZON:
 		return "Amazon Payments";
+	case DonationMethod::CREDIT_CARD:
+		return "Credit Card";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -126,6 +132,7 @@ void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handle
 	handler(DonationMethod::BOUNTYSOURCE);
 	handler(DonationMethod::CHEQUE);
 	handler(DonationMethod::CLICKANDPLEDGE);
+	handler(DonationMethod::CREDIT_CARD);
 	handler(DonationMethod::DWOLLA);
 	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::LITECOIN);

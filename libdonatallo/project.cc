@@ -71,7 +71,7 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 	case DonationMethod::PAYPAL:
 		return "PayPal";
 	case DonationMethod::BITCOIN:
-		return "BitCoin";
+		return "Bitcoin";
 	case DonationMethod::BANK_TRANSFER:
 		return "Bank transfer";
 	case DonationMethod::CHEQUE:

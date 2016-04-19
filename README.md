@@ -13,8 +13,18 @@ We only point you to upstream donation options.
 
 ## Frontends
 
-For now only proof of concept command line application is provided,
-```donatallo-cli```.
+For now only proof of concept command line application is provided, ```donatallo-cli```:
+
+```
+Usage: donatallo-cli [-ah] [-d DATABASE] [-m METHOD,...]
+
+ -a, --all             list all projects in the database
+ -d, --database=PATH   specify path to the database
+ -m, --method=METHOD, --methods=METHOD,...
+                       specify donation methods filter
+                       (see --methods=list for supported methods list)
+ -h, --help            show this help
+```
 
 Run ```donatallo-cli -a``` to list all projects available in the
 donatallo database, or ```donatallo-cli``` to list only projects

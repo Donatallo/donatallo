@@ -58,6 +58,8 @@ public:
 
 	Result GetAll() const;
 	Result Query(const DetectorChain& detectors) const;
+
+	size_t size() const;
 };
 
 }

@@ -250,4 +250,8 @@ Result Database::Query(const DetectorChain& detectors) const {
 	return res;
 }
 
+size_t Database::size() const {
+	return projects_.size();
+}
+
 }

@@ -51,3 +51,15 @@
       - Linux
       - NetBSD
       - OpenBSD
+
+# file in /etc
+- name: etc
+  comment: etc comment
+  url: http://etc
+  donations: http://etc/donate
+  methods:
+    - bitcoin
+  detection:
+    file-in-etc:
+      - crontab
+      - fstab

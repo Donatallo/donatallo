@@ -27,11 +27,13 @@ SET(LIBDONATALLO_HEADERS
 IF(UNIX)
 	SET(LIBDONATALLO_SOURCES ${LIBDONATALLO_SOURCES}
 		util/processreader.cc
+		detectors/fileinetcdetector.cc
 		detectors/packagedetector.cc
 	)
 
 	SET(LIBDONATALLO_HEADERS ${LIBDONATALLO_HEADERS}
 		util/processreader.hh
+		detectors/fileinetcdetector.hh
 		detectors/packagedetector.hh
 	)
 ENDIF(UNIX)

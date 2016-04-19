@@ -3,7 +3,10 @@
 #include <libdonatallo/detectorchain.hh>
 #include <libdonatallo/detectors/alwaysdetector.hh>
 #include <libdonatallo/detectors/opsysdetector.hh>
-#include <libdonatallo/detectors/packagedetector.hh>
+#if !defined(WIN32)
+#	include <libdonatallo/detectors/packagedetector.hh>
+#	include <libdonatallo/detectors/fileinetcdetector.hh>
+#endif
 #include <libdonatallo/detectorfactory.hh>
 
 #include "testing.h"
@@ -19,7 +22,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_TRUE(res.size() == 5);
+		EXPECT_TRUE(res.size() == 6);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");
@@ -116,6 +119,24 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(res[0].name, "cmake");
 		}
 	}
+
+	{
+		// FileInEtcDetector
+		DetectorChain detectors;
+
+		detectors.Append<FileInEtcDetector>();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_EQUAL(res.size(), 1U);
+
+		if (res.size() == 1) {
+			EXPECT_EQUAL(res[0].name, "etc");
+		}
+	}
 #endif
 
 	{
@@ -125,7 +146,7 @@ BEGIN_TEST(int, char*[])
 		{
 			// Check progress reporting:
 #if !defined(WIN32)
-			const int total_detectors = 3;
+			const int total_detectors = 4;
 #else
 			const int total_detectors = 2;
 #endif
@@ -145,7 +166,7 @@ BEGIN_TEST(int, char*[])
 
 		EXPECT_TRUE(!res.empty());
 #if !defined(WIN32)
-		EXPECT_TRUE(res.size() >= 3); // always + cmake
+		EXPECT_TRUE(res.size() >= 4); // always + etc + cmake
 #else
 		EXPECT_TRUE(res.size() >= 2); // always
 #endif

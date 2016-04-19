@@ -93,9 +93,17 @@ int main(int argc, char** argv) try {
 	// Display
 	int num = 1;
 	for (const auto& project : projects) {
-		std::cout << num << ". " << project->name << std::endl;
-		std::cout << "\t" << project->comment << std::endl;
-		std::cout << "\t" << project->url << std::endl;
+		std::cout << "    Project: " << project->name << std::endl;
+		std::cout << "Description: " << project->comment << std::endl;
+		std::cout << "    Website: " << project->url << std::endl;
+		std::cout << "  Donations: " << project->donation_url << std::endl;
+		std::cout << "    Methods: ";
+		for (auto imethod = project->donation_methods.cbegin(); imethod != project->donation_methods.cend(); imethod++) {
+			if (imethod != project->donation_methods.cbegin())
+				std::cout << ", ";
+			std::cout << Donatallo::Project::DonationMethodToHumanReadable(*imethod);
+		}
+		std::cout << std::endl;
 		std::cout << std::endl;
 		num++;
 	}

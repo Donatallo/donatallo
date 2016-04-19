@@ -20,6 +20,7 @@
 #include <getopt.h>
 
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <exception>
 
@@ -30,17 +31,33 @@ static struct option longopts[] = {
 	{ "all",       no_argument,       nullptr, 'a' },
 	{ "database",  required_argument, nullptr, 'd' },
 	{ "help",      no_argument,       nullptr, 'h' },
+	{ "method",    required_argument, nullptr, 'm' },
+	{ "methods",   required_argument, nullptr, 'm' },
 	{ nullptr,     0,                 nullptr, 0   },
 };
 
-void Usage(const std::string& progname, int exitstatus) {
+void Usage(const std::string& progname) {
 	std::cerr << "Usage: " << progname << " [-ah] [-d database path]" << std::endl;
 	std::cerr << std::endl;
 	std::cerr << " -a, --all             list all projects in the database" << std::endl;
 	std::cerr << " -d, --database=PATH   specify path to the database" << std::endl;
+	std::cerr << " -m, --method=METHOD, --methods=METHOD,..." << std::endl;
+	std::cerr << "                       specify donation methods filter" << std::endl;
+	std::cerr << "                       (see --methods=list for supported methods list)" << std::endl;
 	std::cerr << " -h, --help            show this help" << std::endl;
+}
 
-	exit(exitstatus);
+void MethodsList() {
+	std::cerr << "Available donation methods:" << std::endl;
+	size_t maxlength = 0;
+	Donatallo::Project::ForEachDonationMethod([&](Donatallo::Project::DonationMethod method) {
+		maxlength = std::max(maxlength, Donatallo::Project::DonationMethodToKeyword(method).length());
+	});
+
+	Donatallo::Project::ForEachDonationMethod([&](Donatallo::Project::DonationMethod method) {
+		std::cerr << "\t" << std::setw(maxlength) << std::left << Donatallo::Project::DonationMethodToKeyword(method);
+		std::cerr << " " << std::setw(0) << Donatallo::Project::DonationMethodToHumanReadable(method) << std::endl;
+	});
 }
 
 int main(int argc, char** argv) try {
@@ -48,9 +65,10 @@ int main(int argc, char** argv) try {
 
 	bool all_mode = false;
 	std::string database_path = DONATALLO_DATADIR "/database";
+	std::set<Donatallo::Project::DonationMethod> wanted_methods;
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, "ad:h", longopts, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, "ad:m:h", longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'a':
 			all_mode = true;
@@ -58,12 +76,32 @@ int main(int argc, char** argv) try {
 		case 'd':
 			database_path = optarg;
 			break;
+		case 'm':
+			{
+				std::string methods = optarg;
+				size_t start = 0, end;
+				do {
+					end = methods.find(",", start);
+					std::string methodname = methods.substr(start, end == std::string::npos ? std::string::npos : end - start);
+					if (methodname == "list") {
+						MethodsList();
+						exit(0);
+					} else {
+						Donatallo::Project::DonationMethod method = Donatallo::Project::DonationMethodFromKeyword(methodname);
+						if (method == Donatallo::Project::DonationMethod::UNKNOWN)
+							throw std::runtime_error("unknown donation method " + methodname);
+						wanted_methods.insert(method);
+					}
+					start = end + 1;
+				} while (end != std::string::npos);
+			}
+			break;
 		case 'h':
-			Usage(progname, 0);
-			break;
+			Usage(progname);
+			exit(0);
 		default:
-			Usage(progname, 1);
-			break;
+			Usage(progname);
+			exit(1);
 		}
 	}
 
@@ -89,6 +127,9 @@ int main(int argc, char** argv) try {
 	}
 
 	projects = projects.SortByName();
+
+	if (!wanted_methods.empty())
+		projects = projects.FilterByMethods(wanted_methods);
 
 	// Display
 	int num = 1;

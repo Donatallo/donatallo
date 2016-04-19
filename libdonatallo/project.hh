@@ -24,6 +24,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <functional>
 
 namespace Donatallo {
 
@@ -45,6 +46,9 @@ public:
 public:
 	static DonationMethod DonationMethodFromKeyword(const std::string& method);
 	static std::string DonationMethodToHumanReadable(DonationMethod method);
+	static std::string DonationMethodToKeyword(DonationMethod method);
+
+	static void ForEachDonationMethod(std::function<void(DonationMethod)>&& handler);
 
 public:
 	typedef std::vector<std::string> DetectionTagVector;

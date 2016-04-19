@@ -37,7 +37,7 @@ static struct option longopts[] = {
 };
 
 void Usage(const std::string& progname) {
-	std::cerr << "Usage: " << progname << " [-ah] [-d database path]" << std::endl;
+	std::cerr << "Usage: " << progname << " [-ah] [-d DATABASE] [-m METHOD,...]" << std::endl;
 	std::cerr << std::endl;
 	std::cerr << " -a, --all             list all projects in the database" << std::endl;
 	std::cerr << " -d, --database=PATH   specify path to the database" << std::endl;

@@ -135,9 +135,11 @@ int main(int argc, char** argv) try {
 	int num = 1;
 	for (const auto& project : projects) {
 		std::cout << "    Project: " << project->name << std::endl;
-		std::cout << "Description: " << project->comment << std::endl;
+		if (!project->comment.empty())
+			std::cout << "Description: " << project->comment << std::endl;
 		std::cout << "    Website: " << project->url << std::endl;
-		std::cout << "  Donations: " << project->donation_url << std::endl;
+		if (!project->donation_url.empty())
+			std::cout << "  Donations: " << project->donation_url << std::endl;
 		std::cout << "    Methods: ";
 		for (auto imethod = project->donation_methods.cbegin(); imethod != project->donation_methods.cend(); imethod++) {
 			if (imethod != project->donation_methods.cbegin())

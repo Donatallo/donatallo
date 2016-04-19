@@ -77,13 +77,12 @@ void Database::LoadFile(const std::string& path) {
 		{
 			const auto& comment_node = entry["comment"];
 
-			if (!comment_node.IsDefined())
-				throw YAML::Exception(entry.Mark(), "missing comment");
+			if (comment_node.IsDefined()) {
+				if (!comment_node.IsScalar())
+					throw YAML::Exception(comment_node.Mark(), "comment must be a string");
 
-			if (!comment_node.IsScalar())
-				throw YAML::Exception(comment_node.Mark(), "comment must be a string");
-
-			proj.comment = comment_node.as<std::string>();
+				proj.comment = comment_node.as<std::string>();
+			}
 		}
 
 		{
@@ -122,13 +121,12 @@ void Database::LoadFile(const std::string& path) {
 		{
 			const auto& donation_url_node = entry["donations"];
 
-			if (!donation_url_node.IsDefined())
-				throw YAML::Exception(entry.Mark(), "missing donation url");
+			if (donation_url_node.IsDefined()) {
+				if (!donation_url_node.IsScalar())
+					throw YAML::Exception(donation_url_node.Mark(), "donation url must be a string");
 
-			if (!donation_url_node.IsScalar())
-				throw YAML::Exception(donation_url_node.Mark(), "donation url must be a string");
-
-			proj.donation_url = donation_url_node.as<std::string>();
+				proj.donation_url = donation_url_node.as<std::string>();
+			}
 		}
 
 		{

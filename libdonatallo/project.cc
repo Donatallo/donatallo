@@ -42,6 +42,10 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::MERCHANDISE;
 	if (method == "litecoin")
 		return DonationMethod::LITECOIN;
+	if (method == "patreon")
+		return DonationMethod::PATREON;
+	if (method == "bountysource")
+		return DonationMethod::BOUNTYSOURCE;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -65,6 +69,10 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "merchandise";
 	case DonationMethod::LITECOIN:
 		return "litecoin";
+	case DonationMethod::PATREON:
+		return "patreon";
+	case DonationMethod::BOUNTYSOURCE:
+		return "bountysource";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -90,6 +98,10 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Merchandise";
 	case DonationMethod::LITECOIN:
 		return "Litecoin";
+	case DonationMethod::PATREON:
+		return "Patreon";
+	case DonationMethod::BOUNTYSOURCE:
+		return "Bountysource";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -98,11 +110,13 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handler) {
 	handler(DonationMethod::BANK_TRANSFER);
 	handler(DonationMethod::BITCOIN);
+	handler(DonationMethod::BOUNTYSOURCE);
 	handler(DonationMethod::CHEQUE);
 	handler(DonationMethod::CLICKANDPLEDGE);
 	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::LITECOIN);
 	handler(DonationMethod::MERCHANDISE);
+	handler(DonationMethod::PATREON);
 	handler(DonationMethod::PAYPAL);
 	handler(DonationMethod::YANDEX_MONEY);
 }

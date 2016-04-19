@@ -89,9 +89,13 @@ std::pair<pid_t, int> ProcessReader::ForkChild(const char* path, char* const* ar
 		close(pipefd[0]);
 		dup2(pipefd[1], STDOUT_FILENO);
 
-		// XXX: slow; use closefrom()
+#ifdef HAVE_CLOSEFROM
+		closefrom(3);
+#else
+		// this may be slow, e.g. on FreeBSD getdtablesize() returns 170k+
 		for (int fd = 3; fd < getdtablesize(); fd++)
 			close(fd);
+#endif
 
 		sigset_t mask;
 		sigfillset(&mask);

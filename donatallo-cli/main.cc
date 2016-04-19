@@ -121,7 +121,7 @@ int main(int argc, char** argv) try {
 			std::cerr << "Gathering information... " << current << "/" << total << "\r";
 		});
 
-		std::cerr << "Gathering information... Done!" << std::endl;
+		std::cerr << "Gathering information... Done" << std::endl;
 
 		projects = db.Query(detectors);
 	}
@@ -130,6 +130,8 @@ int main(int argc, char** argv) try {
 
 	if (!wanted_methods.empty())
 		projects = projects.FilterByMethods(wanted_methods);
+
+	std::cerr << "Listing " << projects.size() << " project(s) of " << db.size() << " total in the database" << std::endl << std::endl;
 
 	// Display
 	for (const auto& project : projects) {

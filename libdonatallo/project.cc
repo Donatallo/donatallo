@@ -58,6 +58,12 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::STRIPE;
 	if (method == "pledgie")
 		return DonationMethod::PLEDGIE;
+	if (method == "webmoney")
+		return DonationMethod::WEBMONEY;
+	if (method == "western_union")
+		return DonationMethod::WESTERN_UNION;
+	if (method == "tibit")
+		return DonationMethod::TIBIT;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -97,6 +103,12 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "stripe";
 	case DonationMethod::PLEDGIE:
 		return "pledgie";
+	case DonationMethod::WEBMONEY:
+		return "webmoney";
+	case DonationMethod::WESTERN_UNION:
+		return "western_union";
+	case DonationMethod::TIBIT:
+		return "tibit";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -138,6 +150,12 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Stripe";
 	case DonationMethod::PLEDGIE:
 		return "Pledgie";
+	case DonationMethod::WEBMONEY:
+		return "WebMoney";
+	case DonationMethod::WESTERN_UNION:
+		return "Western Union";
+	case DonationMethod::TIBIT:
+		return "Tibit";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -160,6 +178,9 @@ void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handle
 	handler(DonationMethod::PAYPAL);
 	handler(DonationMethod::PLEDGIE);
 	handler(DonationMethod::STRIPE);
+	handler(DonationMethod::TIBIT);
+	handler(DonationMethod::WEBMONEY);
+	handler(DonationMethod::WESTERN_UNION);
 	handler(DonationMethod::YANDEX_MONEY);
 }
 

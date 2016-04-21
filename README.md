@@ -37,6 +37,7 @@ development, for now we support:
 
 * FreeBSD (pkg)
 * Ubuntu/Debian (dpkg)
+* Gentoo/Calculate (equery)
 
 ## Building
 

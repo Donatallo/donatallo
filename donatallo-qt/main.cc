@@ -37,6 +37,7 @@ int main(int argc, char** argv) {
 	QTreeView view;
 	view.setRootIsDecorated(false);
 	view.setModel(&model);
+	view.resizeColumnToContents(0);
 
 	view.show();
 

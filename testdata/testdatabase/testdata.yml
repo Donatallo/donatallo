@@ -63,3 +63,18 @@
     file-in-etc:
       - crontab
       - fstab
+
+# uname -s
+- name: uname-s
+  comment: uname-s comment
+  url: http://uname-s
+  donations: http://uname-s/donate
+  methods:
+    - bitcoin
+  detection:
+    uname-s:
+      - DragonFly
+      - FreeBSD
+      - Linux
+      - NetBSD
+      - OpenBSD

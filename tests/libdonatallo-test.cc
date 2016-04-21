@@ -7,6 +7,7 @@
 #if !defined(WIN32)
 #	include <libdonatallo/detectors/packagedetector.hh>
 #	include <libdonatallo/detectors/fileinetcdetector.hh>
+#	include <libdonatallo/detectors/unamesdetector.hh>
 #endif
 #include <libdonatallo/detectorfactory.hh>
 
@@ -23,7 +24,7 @@ BEGIN_TEST(int, char*[])
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
-		EXPECT_TRUE(res.size() == 6);
+		EXPECT_TRUE(res.size() == 7);
 
 		if (res.size() >= 1) {
 			EXPECT_EQUAL(res[0].name, "never");
@@ -158,6 +159,24 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(res[0].name, "etc");
 		}
 	}
+
+	{
+		// UnameSDetector
+		DetectorChain detectors;
+
+		detectors.Append<UnameSDetector>();
+
+		detectors.Prepare();
+
+		Result res = db.Query(detectors);
+
+		EXPECT_TRUE(!res.empty());
+		EXPECT_EQUAL(res.size(), 1U);
+
+		if (res.size() >= 1) {
+			EXPECT_EQUAL(res[0].name, "uname-s");
+		}
+	}
 #endif
 
 	{
@@ -167,8 +186,10 @@ BEGIN_TEST(int, char*[])
 		{
 			// Check progress reporting:
 #if !defined(WIN32)
+			// always + opsys + etc + pkg + uname
 			const int total_detectors = 5;
 #else
+			// always + opsys
 			const int total_detectors = 2;
 #endif
 
@@ -187,7 +208,7 @@ BEGIN_TEST(int, char*[])
 
 		EXPECT_TRUE(!res.empty());
 #if !defined(WIN32)
-		EXPECT_TRUE(res.size() >= 4); // always + etc + cmake
+		EXPECT_TRUE(res.size() >= 5); // always + etc + cmake + uname -s
 #else
 		EXPECT_TRUE(res.size() >= 2); // always
 #endif

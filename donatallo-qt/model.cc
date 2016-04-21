@@ -41,10 +41,18 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
-	if (index.column() == 0)
+	if (index.column() == 0) {
 		return QString::fromStdString(result_[index.row()].name);
-	else if (index.column() == 1)
-		return "Donat";
+	} else if (index.column() == 1) {
+		QString donations;
+		for (const auto& method : result_[index.row()].donation_methods) {
+			if (!donations.isNull())
+				donations += " ";
+			donations += QString::fromStdString(Donatallo::Project::DonationMethodToKeyword(method));
+		}
+
+		return donations;
+	}
 
 	return QVariant();
 }

@@ -1,0 +1,19 @@
+# depends
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+
+SET(CMAKE_AUTOMOC ON)
+
+# sources
+SET(DONATALLO_QT_SOURCES
+	main.cc
+	model.cc
+)
+
+# targets
+ADD_EXECUTABLE(donatallo-qt ${DONATALLO_QT_SOURCES})
+TARGET_LINK_LIBRARIES(donatallo-qt donatallo Qt5::Widgets)
+
+# installation
+IF(SYSTEMWIDE OR STANDALONE)
+	INSTALL(TARGETS donatallo-qt RUNTIME DESTINATION ${BINDIR})
+ENDIF(SYSTEMWIDE OR STANDALONE)

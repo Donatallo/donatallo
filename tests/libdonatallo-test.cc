@@ -60,6 +60,7 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(res[1].name, "always_a");
 		}
 
+		// Check sorting
 		auto sort1 = res.SortByName();
 
 		EXPECT_EQUAL(sort1.size(), 2U);
@@ -77,6 +78,21 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(sort2[0].name, "always_b");
 			EXPECT_EQUAL(sort2[1].name, "always_a");
 		}
+
+		// Check filtering
+		auto filter1 = res.FilterByMethods({Project::DonationMethod::PAYPAL});
+
+		EXPECT_EQUAL(filter1.size(), 1U);
+
+		if (filter1.size() == 1)
+			EXPECT_EQUAL(filter1[0].name, "always_a");
+
+		auto filter2 = res.FilterByMethods({Project::DonationMethod::BITCOIN});
+
+		EXPECT_EQUAL(filter2.size(), 1U);
+
+		if (filter2.size() == 1)
+			EXPECT_EQUAL(filter2[0].name, "always_b");
 
 		// check iteration
 		for (auto& project : res) {

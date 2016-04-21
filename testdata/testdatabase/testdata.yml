@@ -33,7 +33,7 @@
   url: http://always_a
   donations: http://always_a/donate
   methods:
-    - bitcoin
+    - paypal
   detection:
     always: ""
 

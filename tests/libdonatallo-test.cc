@@ -1,5 +1,6 @@
 #include <libdonatallo/database.hh>
 #include <libdonatallo/result.hh>
+#include <libdonatallo/project.hh>
 #include <libdonatallo/detectorchain.hh>
 #include <libdonatallo/detectors/alwaysdetector.hh>
 #include <libdonatallo/detectors/opsysdetector.hh>
@@ -79,6 +80,10 @@ BEGIN_TEST(int, char*[])
 
 		// check iteration
 		for (auto& project : res) {
+			EXPECT_TRUE(project->name == "always_a" || project->name == "always_b");
+		}
+
+		for (const auto& project : res) {
 			EXPECT_TRUE(project->name == "always_a" || project->name == "always_b");
 		}
 	}
@@ -170,5 +175,14 @@ BEGIN_TEST(int, char*[])
 #else
 		EXPECT_TRUE(res.size() >= 2); // always
 #endif
+	}
+
+	{
+		// doantion types stuff
+		Project::ForEachDonationMethod([&](Project::DonationMethod method) {
+			EXPECT_TRUE(method == Project::DonationMethodFromKeyword(Project::DonationMethodToKeyword(method)));
+			EXPECT_NO_EXCEPTION(Project::DonationMethodToHumanReadable(method));
+			EXPECT_TRUE(Project::DonationMethodToHumanReadable(method) != "");
+		});
 	}
 END_TEST()

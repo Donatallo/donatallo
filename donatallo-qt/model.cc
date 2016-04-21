@@ -49,6 +49,22 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 	return QVariant();
 }
 
+QVariant Model::headerData(int section, Qt::Orientation orientation, int role) const {
+	if (orientation != Qt::Horizontal)
+		return QVariant();
+
+	if (role == Qt::DisplayRole) {
+		switch (section) {
+		case 0:
+			return "Project";
+		case 1:
+			return "Donations";
+		}
+	}
+
+	return QVariant();
+}
+
 QModelIndex Model::index(int row, int column, const QModelIndex &parent) const {
 	if (parent.isValid())
 		return QModelIndex();

@@ -35,6 +35,7 @@ public:
 	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 	int columnCount(const QModelIndex& parent = QModelIndex()) const final;
 	QVariant data(const QModelIndex &index = QModelIndex(), int role = Qt::DisplayRole) const final;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const final;
 
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const final;
 	QModelIndex parent(const QModelIndex &index = QModelIndex()) const final;

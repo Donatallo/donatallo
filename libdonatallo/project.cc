@@ -64,6 +64,8 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::WESTERN_UNION;
 	if (method == "tibit")
 		return DonationMethod::TIBIT;
+	if (method == "dash")
+		return DonationMethod::DASH;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -109,6 +111,8 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "western_union";
 	case DonationMethod::TIBIT:
 		return "tibit";
+	case DonationMethod::DASH:
+		return "dash";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -156,6 +160,8 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Western Union";
 	case DonationMethod::TIBIT:
 		return "Tibit";
+	case DonationMethod::DASH:
+		return "Dash";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -169,6 +175,7 @@ void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handle
 	handler(DonationMethod::CHEQUE);
 	handler(DonationMethod::CLICKANDPLEDGE);
 	handler(DonationMethod::CREDIT_CARD);
+	handler(DonationMethod::DASH);
 	handler(DonationMethod::DWOLLA);
 	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::HARDWARE);

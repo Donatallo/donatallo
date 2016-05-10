@@ -174,7 +174,7 @@ void Database::LoadMeta(const std::string& path, std::vector<std::string>& files
 		std::string version = version_node.as<std::string>();
 
 		const int my_major = 0;
-		const int my_minor = 8;
+		const int my_minor = 9;
 
 		size_t dot1pos = version.find('.');
 		if (dot1pos == std::string::npos)

@@ -42,7 +42,10 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 		return QVariant();
 
 	if (index.column() == 0) {
-		return QString::fromStdString(result_[index.row()].name);
+		return QVariant(QList<QVariant>{
+				QString::fromStdString(result_[index.row()].name),
+				QString::fromStdString(result_[index.row()].comment)
+			});
 	} else if (index.column() == 1) {
 		QString donations;
 		for (const auto& method : result_[index.row()].donation_methods) {

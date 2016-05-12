@@ -24,6 +24,7 @@
 #include <libdonatallo/database.hh>
 
 #include "model.hh"
+#include "projectdelegate.hh"
 
 int main(int argc, char** argv) {
 	QApplication app(argc, argv);
@@ -42,6 +43,10 @@ int main(int argc, char** argv) {
 	view.header()->setSectionResizeMode(0, QHeaderView::Stretch);
 	view.header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	view.header()->setStretchLastSection(false);
+
+	ProjectDelegate delegate;
+
+	view.setItemDelegate(&delegate);
 
 	view.show();
 

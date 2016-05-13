@@ -7,6 +7,7 @@ SET(CMAKE_AUTOMOC ON)
 SET(DONATALLO_QT_SOURCES
 	main.cc
 	model.cc
+	projectdelegate.cc
 )
 
 # targets

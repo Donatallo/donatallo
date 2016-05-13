@@ -33,34 +33,23 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 	}
 
 	if (index.column() == 0) {
-		int font_height = QFontMetrics(option.font).height();
-
-		// bold font for header
-		QFont bold_font = option.font;
-		bold_font.setWeight(QFont::Bold);
-
-		// data strings
-		QString name = index.data().toList()[0].toString();
-		QString comment = index.data().toList()[1].toString();
-
-		// rects for text rendering
-		QRectF name_rect = option.rect.marginsRemoved(QMargins(font_height/2, font_height/2, font_height/2, font_height/2));
-		QRectF comment_rect = name_rect;
-		comment_rect.setTop(comment_rect.top() + font_height * 1.5f);
+		ProjectItemData itemdata = GetProjectItemData(option, index);
 
 		// draw texts
 		painter->save();
+
+		painter->setClipRect(option.rect);
 
 		if (option.state & QStyle::State_Selected)
 			painter->setPen(option.palette.highlightedText().color());
 		else
 			painter->setPen(option.palette.text().color());
 
-		painter->setFont(bold_font);
-		painter->drawText(name_rect, Qt::AlignLeft, "  " + name);
+		painter->setFont(itemdata.header_font);
+		painter->drawText(itemdata.name_rect, Qt::AlignLeft | Qt::AlignTop | Qt::TextDontClip, itemdata.name);
 
 		painter->setFont(option.font);
-		painter->drawText(comment_rect, Qt::AlignLeft, comment);
+		painter->drawText(itemdata.comment_rect, Qt::AlignLeft | Qt::AlignTop | Qt::TextDontClip, itemdata.comment);
 
 		painter->restore();
 	} else {
@@ -70,10 +59,38 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const {
 	if (index.column() == 0) {
-		int font_height = QFontMetrics(option.font).height();
-
-		return QSize(10, font_height * (0.5f + 1.0f + 0.5f + 1.0f + 0.5f));
+		ProjectItemData itemdata = GetProjectItemData(option, index);
+		return itemdata.total_item_rect.size();
 	} else {
 		return QStyledItemDelegate::sizeHint(option, index);
 	}
+}
+
+ProjectDelegate::ProjectItemData ProjectDelegate::GetProjectItemData(const QStyleOptionViewItem &option, const QModelIndex &index) const {
+	constexpr static int margin = 5;
+	constexpr static int header_bottom_spacing = margin;
+	constexpr static int header_left_spacing = 10;
+	constexpr static float header_size_multiplier = 1.2f;
+
+	ProjectItemData data;
+	data.name = index.data().toList()[0].toString();
+	data.comment = index.data().toList()[1].toString();
+
+	int font_height = QFontMetrics(option.font).height();
+	int header_font_height = (int)(font_height * header_size_multiplier);
+
+	data.header_font = option.font;
+	data.header_font.setWeight(QFont::Bold);
+	data.header_font.setPixelSize(header_font_height);
+
+	// note that the rects are approximate
+	data.name_rect = QFontMetrics(data.header_font).boundingRect(data.name);
+	data.comment_rect = QFontMetrics(option.font).boundingRect(data.comment);
+
+	data.name_rect.moveTo(option.rect.topLeft() + QPoint(margin + header_left_spacing, margin));
+	data.comment_rect.moveTo(option.rect.topLeft() + QPoint(margin, margin + data.name_rect.height() + header_bottom_spacing));
+
+	data.total_item_rect = (data.name_rect | data.comment_rect).marginsAdded(QMargins(margin, margin, margin, margin));
+
+	return data;
 }

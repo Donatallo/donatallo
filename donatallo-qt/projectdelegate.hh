@@ -30,11 +30,27 @@ QT_END_NAMESPACE
 
 class ProjectDelegate : public QStyledItemDelegate {
 	Q_OBJECT
+private:
+	struct ProjectItemData {
+		QString name;
+		QString comment;
+
+		QFont header_font;
+
+		QRect name_rect;
+		QRect comment_rect;
+
+		QRect total_item_rect;
+	};
+
 public:
 	ProjectDelegate(QObject *parent = nullptr);
 
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+
+private:
+	ProjectItemData GetProjectItemData(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 #endif

@@ -45,6 +45,8 @@ private:
 		QRect total_item_rect;
 	};
 
+	static constexpr int icon_size_ = 32;
+
 private:
 	QMap<QString, QPixmap> payment_method_icons_;
 

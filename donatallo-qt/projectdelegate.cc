@@ -22,6 +22,8 @@
 
 #include "projectdelegate.hh"
 
+constexpr int ProjectDelegate::icon_size_;
+
 ProjectDelegate::ProjectDelegate(QObject *parent) : QStyledItemDelegate(parent) {
 	QDirIterator it(DONATALLO_DATADIR "/database/payment_icons/", { "*.png" }, QDir::Files);
 	while (it.hasNext()) {
@@ -58,9 +60,27 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 
 		painter->setFont(option.font);
 		painter->drawText(itemdata.comment_rect, Qt::AlignLeft | Qt::AlignTop | Qt::TextDontClip, itemdata.comment);
+	} else if (index.column() == 1) {
+		QStringList methods = index.data().toString().split(" ");
 
-	} else {
-		QStyledItemDelegate::paint(painter, option, index);
+		QSize icons_size(icon_size_ * methods.size(), icon_size_);
+
+		int n = -1;
+		for (auto& method : methods) {
+			n++;
+
+			auto icon = payment_method_icons_.find(method);
+			if (icon == payment_method_icons_.end())
+				icon = payment_method_icons_.find("default");
+			if (icon == payment_method_icons_.end())
+				continue;
+
+			painter->drawPixmap(
+				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * icon_size_,
+				option.rect.top() + (option.rect.height() - icons_size.height()) / 2,
+				*icon
+			);
+		}
 	}
 
 	painter->restore();
@@ -71,7 +91,8 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 		ProjectItemData itemdata = GetProjectItemData(option, index);
 		return itemdata.total_item_rect.size();
 	} else {
-		return QStyledItemDelegate::sizeHint(option, index);
+		QStringList methods = index.data().toString().split(" ");
+		return QSize(icon_size_ * methods.size(), icon_size_);
 	}
 }
 

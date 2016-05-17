@@ -24,7 +24,12 @@
 
 #include "projectdelegate.hh"
 
-constexpr int ProjectDelegate::icon_size_;
+constexpr int ProjectDelegate::project_cell_margin_;
+constexpr int ProjectDelegate::project_name_bottom_spacing_;
+constexpr int ProjectDelegate::project_name_right_shift_;
+constexpr float ProjectDelegate::project_name_font_size_multiplier_;
+
+constexpr int ProjectDelegate::payment_method_icon_size_;
 
 ProjectDelegate::ProjectDelegate(QObject *parent) : QStyledItemDelegate(parent) {
 	QDirIterator it(DONATALLO_DATADIR "/database/payment_icons/", { "*.png" }, QDir::Files);
@@ -65,17 +70,17 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 	} else if (index.column() == 1) {
 		QStringList methods = index.data().toString().split(" ");
 
-		QSize icons_size(icon_size_ * methods.size(), icon_size_);
+		QSize icons_size(payment_method_icon_size_ * methods.size(), payment_method_icon_size_);
 
 		int n = -1;
 		for (auto& method : methods) {
 			n++;
 
 			QRect target_rect(
-				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * icon_size_,
+				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * payment_method_icon_size_,
 				option.rect.top() + (option.rect.height() - icons_size.height()) / 2,
-				icon_size_,
-				icon_size_
+				payment_method_icon_size_,
+				payment_method_icon_size_
 			);
 
 			auto icon = payment_method_icons_.find(method);
@@ -111,22 +116,17 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 		return itemdata.total_item_rect.size();
 	} else {
 		QStringList methods = index.data().toString().split(" ");
-		return QSize(icon_size_ * methods.size(), icon_size_);
+		return QSize(payment_method_icon_size_ * methods.size(), payment_method_icon_size_);
 	}
 }
 
 ProjectDelegate::ProjectItemData ProjectDelegate::GetProjectItemData(const QStyleOptionViewItem &option, const QModelIndex &index) const {
-	constexpr static int margin = 5;
-	constexpr static int header_bottom_spacing = margin;
-	constexpr static int header_left_spacing = 10;
-	constexpr static float header_size_multiplier = 1.2f;
-
 	ProjectItemData data;
 	data.name = index.data().toList()[0].toString();
 	data.comment = index.data().toList()[1].toString();
 
 	int font_height = QFontMetrics(option.font).height();
-	int header_font_height = (int)(font_height * header_size_multiplier);
+	int header_font_height = (int)(font_height * project_name_font_size_multiplier_);
 
 	data.header_font = option.font;
 	data.header_font.setWeight(QFont::Bold);
@@ -136,10 +136,16 @@ ProjectDelegate::ProjectItemData ProjectDelegate::GetProjectItemData(const QStyl
 	data.name_rect = QFontMetrics(data.header_font).boundingRect(data.name);
 	data.comment_rect = QFontMetrics(option.font).boundingRect(data.comment);
 
-	data.name_rect.moveTo(option.rect.topLeft() + QPoint(margin + header_left_spacing, margin));
-	data.comment_rect.moveTo(option.rect.topLeft() + QPoint(margin, margin + data.name_rect.height() + header_bottom_spacing));
+	data.name_rect.moveTo(
+		option.rect.topLeft() + QPoint(project_cell_margin_ + project_name_right_shift_, project_cell_margin_)
+	);
+	data.comment_rect.moveTo(
+		option.rect.topLeft() + QPoint(project_cell_margin_, project_cell_margin_ + data.name_rect.height() + project_name_bottom_spacing_)
+	);
 
-	data.total_item_rect = (data.name_rect | data.comment_rect).marginsAdded(QMargins(margin, margin, margin, margin));
+	data.total_item_rect = (data.name_rect | data.comment_rect).marginsAdded(
+		QMargins(project_cell_margin_, project_cell_margin_, project_cell_margin_, project_cell_margin_)
+	);
 
 	return data;
 }

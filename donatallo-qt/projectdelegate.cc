@@ -70,7 +70,7 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 		painter->setFont(option.font);
 		painter->drawText(itemdata.comment_rect, Qt::AlignLeft | Qt::AlignTop | Qt::TextDontClip, itemdata.comment);
 	} else if (index.column() == 1) {
-		QStringList methods = index.data().toString().split(" ");
+		QStringList methods = index.data().toStringList();
 
 		QSize icons_size(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() - 1), payment_method_icon_size_);
 
@@ -117,7 +117,7 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 		ProjectItemData itemdata = GetProjectItemData(option, index);
 		return itemdata.total_item_rect.size();
 	} else {
-		QStringList methods = index.data().toString().split(" ");
+		QStringList methods = index.data().toStringList();
 		return QSize(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() - 1), payment_method_icon_size_);
 	}
 }

@@ -52,6 +52,7 @@ private:
 
 	static constexpr int payment_method_icon_size_ = 32;
 	static constexpr int payment_method_icon_spacing_ = 4;
+	static constexpr int payment_method_icon_rounding_ = 5;
 
 private:
 	QMap<QString, QPixmap> payment_method_icons_;

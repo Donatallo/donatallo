@@ -30,6 +30,8 @@ constexpr int ProjectDelegate::project_name_right_shift_;
 constexpr float ProjectDelegate::project_name_font_size_multiplier_;
 
 constexpr int ProjectDelegate::payment_method_icon_size_;
+constexpr int ProjectDelegate::payment_method_icon_spacing_;
+constexpr int ProjectDelegate::payment_method_icon_rounding_;
 
 ProjectDelegate::ProjectDelegate(QObject *parent) : QStyledItemDelegate(parent) {
 	QDirIterator it(DONATALLO_DATADIR "/database/payment_icons/", { "*.png" }, QDir::Files);
@@ -90,7 +92,7 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 				painter->setPen(Qt::NoPen);
 				painter->setBrush(QColor::fromHsv((qHash(method) >> 5) % 360, 128, 192));
 				painter->setRenderHint(QPainter::Antialiasing);
-				painter->drawRoundedRect(target_rect, 50, 50, Qt::RelativeSize);
+				painter->drawRoundedRect(target_rect, payment_method_icon_rounding_, payment_method_icon_rounding_);
 
 				painter->setPen(Qt::white);
 				painter->drawText(target_rect.marginsRemoved(QMargins(2, 2, 2, 2)), Qt::AlignHCenter | Qt::TextWrapAnywhere,

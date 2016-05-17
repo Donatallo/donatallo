@@ -40,14 +40,14 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 		painter->fillRect(option.rect, option.palette.alternateBase());
 	}
 
+	painter->save();
+
+	painter->setClipRect(option.rect);
+
 	if (index.column() == 0) {
 		ProjectItemData itemdata = GetProjectItemData(option, index);
 
 		// draw texts
-		painter->save();
-
-		painter->setClipRect(option.rect);
-
 		if (option.state & QStyle::State_Selected)
 			painter->setPen(option.palette.highlightedText().color());
 		else
@@ -59,10 +59,11 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 		painter->setFont(option.font);
 		painter->drawText(itemdata.comment_rect, Qt::AlignLeft | Qt::AlignTop | Qt::TextDontClip, itemdata.comment);
 
-		painter->restore();
 	} else {
 		QStyledItemDelegate::paint(painter, option, index);
 	}
+
+	painter->restore();
 }
 
 QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const {

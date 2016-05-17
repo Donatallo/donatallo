@@ -38,21 +38,29 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 	if (!index.isValid())
 		return QVariant();
 
-	if (role != Qt::DisplayRole)
-		return QVariant();
+	if (role == Qt::DisplayRole) {
+		if (index.column() == 0) {
+			return QVariant(QList<QVariant>{
+					QString::fromStdString(result_[index.row()].name),
+					QString::fromStdString(result_[index.row()].comment)
+				});
+		} else if (index.column() == 1) {
+			QStringList donations;
 
-	if (index.column() == 0) {
-		return QVariant(QList<QVariant>{
-				QString::fromStdString(result_[index.row()].name),
-				QString::fromStdString(result_[index.row()].comment)
-			});
-	} else if (index.column() == 1) {
-		QStringList donations;
+			for (const auto& method : result_[index.row()].donation_methods)
+				donations.append(QString::fromStdString(Donatallo::Project::DonationMethodToKeyword(method)));
 
-		for (const auto& method : result_[index.row()].donation_methods)
-			donations.append(QString::fromStdString(Donatallo::Project::DonationMethodToKeyword(method)));
+			return donations;
+		}
+	} else if (role == Qt::ToolTipRole) {
+		if (index.column() == 1) {
+			QStringList donations;
 
-		return donations;
+			for (const auto& method : result_[index.row()].donation_methods)
+				donations.append(QString::fromStdString(Donatallo::Project::DonationMethodToHumanReadable(method)));
+
+			return donations.join(", ");
+		}
 	}
 
 	return QVariant();

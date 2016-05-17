@@ -70,14 +70,14 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 	} else if (index.column() == 1) {
 		QStringList methods = index.data().toString().split(" ");
 
-		QSize icons_size(payment_method_icon_size_ * methods.size(), payment_method_icon_size_);
+		QSize icons_size(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() - 1), payment_method_icon_size_);
 
 		int n = -1;
 		for (auto& method : methods) {
 			n++;
 
 			QRect target_rect(
-				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * payment_method_icon_size_,
+				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * (payment_method_icon_size_ + payment_method_icon_spacing_),
 				option.rect.top() + (option.rect.height() - icons_size.height()) / 2,
 				payment_method_icon_size_,
 				payment_method_icon_size_
@@ -116,7 +116,7 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 		return itemdata.total_item_rect.size();
 	} else {
 		QStringList methods = index.data().toString().split(" ");
-		return QSize(payment_method_icon_size_ * methods.size(), payment_method_icon_size_);
+		return QSize(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() - 1), payment_method_icon_size_);
 	}
 }
 

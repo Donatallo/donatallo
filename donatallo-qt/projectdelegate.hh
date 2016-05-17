@@ -51,6 +51,7 @@ private:
 	static constexpr float project_name_font_size_multiplier_ = 1.2f;
 
 	static constexpr int payment_method_icon_size_ = 32;
+	static constexpr int payment_method_icon_spacing_ = 4;
 
 private:
 	QMap<QString, QPixmap> payment_method_icons_;

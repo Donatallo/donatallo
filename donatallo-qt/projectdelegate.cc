@@ -18,10 +18,18 @@
  */
 
 #include <QPainter>
+#include <QDirIterator>
 
 #include "projectdelegate.hh"
 
 ProjectDelegate::ProjectDelegate(QObject *parent) : QStyledItemDelegate(parent) {
+	QDirIterator it(DONATALLO_DATADIR "/database/payment_icons/", { "*.png" }, QDir::Files);
+	while (it.hasNext()) {
+		it.next();
+		QString name = it.fileName();
+		name.chop(4);
+		payment_method_icons_[name] = QPixmap(it.filePath());
+	}
 }
 
 void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {

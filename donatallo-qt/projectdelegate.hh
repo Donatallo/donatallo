@@ -23,6 +23,8 @@
 #include <QStyledItemDelegate>
 #include <QModelIndex>
 #include <QSize>
+#include <QMap>
+#include <QPixmap>
 
 QT_BEGIN_NAMESPACE
 class QPainter;
@@ -42,6 +44,9 @@ private:
 
 		QRect total_item_rect;
 	};
+
+private:
+	QMap<QString, QPixmap> payment_method_icons_;
 
 public:
 	ProjectDelegate(QObject *parent = nullptr);

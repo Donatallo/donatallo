@@ -20,6 +20,8 @@
 #include <QPainter>
 #include <QDirIterator>
 
+#include <libdonatallo/project.hh>
+
 #include "projectdelegate.hh"
 
 constexpr int ProjectDelegate::icon_size_;
@@ -69,17 +71,34 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 		for (auto& method : methods) {
 			n++;
 
-			auto icon = payment_method_icons_.find(method);
-			if (icon == payment_method_icons_.end())
-				icon = payment_method_icons_.find("default");
-			if (icon == payment_method_icons_.end())
-				continue;
-
-			painter->drawPixmap(
+			QRect target_rect(
 				option.rect.left() + (option.rect.width() - icons_size.width()) / 2 + n * icon_size_,
 				option.rect.top() + (option.rect.height() - icons_size.height()) / 2,
-				*icon
+				icon_size_,
+				icon_size_
 			);
+
+			auto icon = payment_method_icons_.find(method);
+			if (icon != payment_method_icons_.end()) {
+				painter->drawPixmap(target_rect, *icon);
+			} else {
+				painter->setPen(Qt::NoPen);
+				painter->setBrush(QColor::fromHsv((qHash(method) >> 5) % 360, 128, 192));
+				painter->setRenderHint(QPainter::Antialiasing);
+				painter->drawRoundedRect(target_rect, 50, 50, Qt::RelativeSize);
+
+				painter->setPen(Qt::white);
+				painter->drawText(target_rect.marginsRemoved(QMargins(2, 2, 2, 2)), Qt::AlignHCenter | Qt::TextWrapAnywhere,
+					// XXX: lol, simplify this
+					QString::fromStdString(
+						Donatallo::Project::DonationMethodToHumanReadable(
+							Donatallo::Project::DonationMethodFromKeyword(
+								method.toStdString()
+							)
+						)
+					)
+				);
+			}
 		}
 	}
 

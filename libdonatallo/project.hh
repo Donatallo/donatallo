@@ -34,6 +34,7 @@ class Project {
 public:
 	enum class DonationMethod {
 		AMAZON,
+		ANONCOIN,
 		BANK_TRANSFER,
 		BITCOIN,
 		BOUNTYSOURCE,
@@ -46,6 +47,7 @@ public:
 		HARDWARE,
 		LITECOIN,
 		MERCHANDISE,
+		MONERO,
 		PATREON,
 		PAYPAL,
 		PLEDGIE,

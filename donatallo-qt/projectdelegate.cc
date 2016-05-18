@@ -118,7 +118,7 @@ QSize ProjectDelegate::sizeHint(const QStyleOptionViewItem &option, const QModel
 		return itemdata.total_item_rect.size();
 	} else {
 		QStringList methods = index.data().toStringList();
-		return QSize(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() - 1), payment_method_icon_size_);
+		return QSize(payment_method_icon_size_ * methods.size() + payment_method_icon_spacing_ * (methods.size() + 1), payment_method_icon_size_);
 	}
 }
 

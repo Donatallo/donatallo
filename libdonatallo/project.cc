@@ -64,6 +64,12 @@ Project::DonationMethod Project::DonationMethodFromKeyword(const std::string& me
 		return DonationMethod::WESTERN_UNION;
 	if (method == "tibit")
 		return DonationMethod::TIBIT;
+	if (method == "dash")
+		return DonationMethod::DASH;
+	if (method == "anoncoin")
+		return DonationMethod::ANONCOIN;
+	if (method == "monero")
+		return DonationMethod::MONERO;
 	return DonationMethod::UNKNOWN;
 }
 
@@ -109,6 +115,12 @@ std::string Project::DonationMethodToKeyword(DonationMethod method) {
 		return "western_union";
 	case DonationMethod::TIBIT:
 		return "tibit";
+	case DonationMethod::DASH:
+		return "dash";
+	case DonationMethod::ANONCOIN:
+		return "anoncoin";
+	case DonationMethod::MONERO:
+		return "monero";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -156,6 +168,12 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 		return "Western Union";
 	case DonationMethod::TIBIT:
 		return "Tibit";
+	case DonationMethod::DASH:
+		return "Dash";
+	case DonationMethod::ANONCOIN:
+		return "Anoncoin";
+	case DonationMethod::MONERO:
+		return "Monero";
 	default:
 		throw std::logic_error("unknown donation method");
 	}
@@ -163,17 +181,20 @@ std::string Project::DonationMethodToHumanReadable(DonationMethod method) {
 
 void Project::ForEachDonationMethod(std::function<void(DonationMethod)>&& handler) {
 	handler(DonationMethod::AMAZON);
+	handler(DonationMethod::ANONCOIN);
 	handler(DonationMethod::BANK_TRANSFER);
 	handler(DonationMethod::BITCOIN);
 	handler(DonationMethod::BOUNTYSOURCE);
 	handler(DonationMethod::CHEQUE);
 	handler(DonationMethod::CLICKANDPLEDGE);
 	handler(DonationMethod::CREDIT_CARD);
+	handler(DonationMethod::DASH);
 	handler(DonationMethod::DWOLLA);
 	handler(DonationMethod::FLATTR);
 	handler(DonationMethod::HARDWARE);
 	handler(DonationMethod::LITECOIN);
 	handler(DonationMethod::MERCHANDISE);
+	handler(DonationMethod::MONERO);
 	handler(DonationMethod::PATREON);
 	handler(DonationMethod::PAYPAL);
 	handler(DonationMethod::PLEDGIE);

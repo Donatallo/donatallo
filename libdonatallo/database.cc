@@ -53,7 +53,118 @@ std::string Database::ParsingException::build_what(const std::string& file, int 
 Database::Database() {
 }
 
-void Database::LoadFile(const std::string& path) {
+void Database::LoadMeta(const std::string& path, std::vector<std::string>& method_files_to_load, std::vector<std::string>& project_files_to_load) {
+	YAML::Node meta = YAML::LoadFile(path);
+
+	if (!meta.IsMap())
+		throw YAML::Exception(meta.Mark(), "must be a map");
+
+	{
+		const auto& version_node = meta["version"];
+
+		if (!version_node.IsDefined())
+			throw YAML::Exception(meta.Mark(), "missing version");
+
+		if (!version_node.IsScalar())
+			throw YAML::Exception(meta.Mark(), "version must be a string");
+
+		std::string version = version_node.as<std::string>();
+
+		const int my_major = 1;
+		const int my_minor = 0;
+
+		size_t dot1pos = version.find('.');
+		if (dot1pos == std::string::npos)
+			throw YAML::Exception(version_node.Mark(), "bad version format");
+		size_t dot2pos = version.find('.', dot1pos + 1);
+		if (dot2pos == std::string::npos)
+			throw YAML::Exception(version_node.Mark(), "bad version format");
+
+		int major = std::stoi(version.substr(0, dot1pos));
+		int minor = std::stoi(version.substr(dot1pos + 1, dot2pos - dot1pos - 1));
+
+		if (major > my_major)
+			throw std::runtime_error("database major version too new, not supported; please update donatallo");
+		if (major < my_major)
+			throw std::runtime_error("database major version too old, not supported; please update the database");
+
+		if (minor > my_minor)
+			std::cerr << "Warning: database minor version is newer than known to an application, which means that some database features may be unsupported" << std::endl;
+	}
+
+	{
+		const auto projects_node = meta["projects"];
+
+		if (!projects_node.IsDefined())
+			throw YAML::Exception(projects_node.Mark(), "missing projects");
+
+		if (!projects_node.IsSequence())
+			throw YAML::Exception(projects_node.Mark(), "projects must be a sequence");
+
+		for (const auto& file : projects_node) {
+			if (!file.IsScalar())
+				throw YAML::Exception(file.Mark(), "project file must be a string");
+
+			project_files_to_load.push_back(file.as<std::string>());
+		}
+	}
+
+	{
+		const auto methods_node = meta["methods"];
+
+		if (!methods_node.IsDefined())
+			throw YAML::Exception(methods_node.Mark(), "missing methods");
+
+		if (!methods_node.IsSequence())
+			throw YAML::Exception(methods_node.Mark(), "methods must be a sequence");
+
+		for (const auto& file : methods_node) {
+			if (!file.IsScalar())
+				throw YAML::Exception(file.Mark(), "method file must be a string");
+
+			method_files_to_load.push_back(file.as<std::string>());
+		}
+	}
+}
+
+void Database::LoadMethods(const std::string& path) {
+	YAML::Node data = YAML::LoadFile(path);
+
+	if (!data.IsSequence())
+		throw YAML::Exception(data.Mark(), "must be a sequence");
+
+	for (const auto& entry : data) {
+		DonationMethod method;
+
+		{
+			const auto& id_node = entry["id"];
+
+			if (!id_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing id");
+
+			if (!id_node.IsScalar())
+				throw YAML::Exception(id_node.Mark(), "id must be a string");
+
+			method.id = id_node.as<std::string>();
+		}
+
+		{
+			const auto& name_node = entry["name"];
+
+			if (!name_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing name");
+
+			if (!name_node.IsScalar())
+				throw YAML::Exception(name_node.Mark(), "name must be a string");
+
+			method.name = name_node.as<std::string>();
+		}
+
+		methods_.emplace_back(std::move(method));
+	}
+}
+
+void Database::LoadProjects(const std::string& path) {
 	YAML::Node data = YAML::LoadFile(path);
 
 	if (!data.IsSequence())
@@ -156,75 +267,27 @@ void Database::LoadFile(const std::string& path) {
 	}
 }
 
-void Database::LoadMeta(const std::string& path, std::vector<std::string>& files_to_load) {
-	YAML::Node meta = YAML::LoadFile(path);
-
-	if (!meta.IsMap())
-		throw YAML::Exception(meta.Mark(), "must be a map");
-
-	{
-		const auto& version_node = meta["version"];
-
-		if (!version_node.IsDefined())
-			throw YAML::Exception(meta.Mark(), "missing version");
-
-		if (!version_node.IsScalar())
-			throw YAML::Exception(meta.Mark(), "version must be a string");
-
-		std::string version = version_node.as<std::string>();
-
-		const int my_major = 0;
-		const int my_minor = 12;
-
-		size_t dot1pos = version.find('.');
-		if (dot1pos == std::string::npos)
-			throw YAML::Exception(version_node.Mark(), "bad version format");
-		size_t dot2pos = version.find('.', dot1pos + 1);
-		if (dot2pos == std::string::npos)
-			throw YAML::Exception(version_node.Mark(), "bad version format");
-
-		int major = std::stoi(version.substr(0, dot1pos));
-		int minor = std::stoi(version.substr(dot1pos + 1, dot2pos - dot1pos - 1));
-
-		if (major > my_major)
-			throw std::runtime_error("database major version too new, not supported; please update donatallo");
-		if (major < my_major)
-			throw std::runtime_error("database major version too old, not supported; please update the database");
-
-		if (minor > my_minor)
-			std::cerr << "Warning: database minor version is newer than known to an application, which means that some database features may be unsupported" << std::endl;
-	}
-
-	{
-		const auto files_node = meta["files"];
-
-		if (!files_node.IsDefined())
-			throw YAML::Exception(files_node.Mark(), "missing files");
-
-		if (!files_node.IsSequence())
-			throw YAML::Exception(files_node.Mark(), "files must be a sequence");
-
-		for (const auto& file : files_node) {
-			if (!file.IsScalar())
-				throw YAML::Exception(file.Mark(), "file must be a string");
-
-			files_to_load.push_back(file.as<std::string>());
-		}
-	}
-}
-
 void Database::Load(const std::string& dbdir) {
-	std::vector<std::string> files_to_load;
+	std::vector<std::string> method_files_to_load;
+	std::vector<std::string> project_files_to_load;
 
 	try {
-		LoadMeta(dbdir + "/meta.yml", files_to_load);
+		LoadMeta(dbdir + "/meta.yml", method_files_to_load, project_files_to_load);
 	} catch (YAML::Exception& e) {
 		throw ParsingException(dbdir + "/meta.yml", e.mark.line, e.mark.column, e.msg);
 	}
 
-	for (const auto& file : files_to_load) {
+	for (const auto& file : method_files_to_load) {
 		try {
-			LoadFile(dbdir + "/" + file);
+			LoadMethods(dbdir + "/" + file);
+		} catch (YAML::Exception& e) {
+			throw ParsingException(dbdir + "/" + file, e.mark.line, e.mark.column, e.msg);
+		}
+	}
+
+	for (const auto& file : project_files_to_load) {
+		try {
+			LoadProjects(dbdir + "/" + file);
 		} catch (YAML::Exception& e) {
 			throw ParsingException(dbdir + "/" + file, e.mark.line, e.mark.column, e.msg);
 		}

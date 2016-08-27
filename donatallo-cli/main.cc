@@ -47,16 +47,16 @@ void Usage(const std::string& progname) {
 	std::cerr << " -h, --help            show this help" << std::endl;
 }
 
-void MethodsList() {
+void MethodsList(const Donatallo::Database& database) {
 	std::cerr << "Available donation methods:" << std::endl;
 	size_t maxlength = 0;
-	Donatallo::Project::ForEachDonationMethod([&](Donatallo::Project::DonationMethod method) {
-		maxlength = std::max(maxlength, Donatallo::Project::DonationMethodToKeyword(method).length());
+	database.ForEachDonationMethod([&](const Donatallo::DonationMethod& method) {
+		maxlength = std::max(maxlength, method.keyword.length());
 	});
 
-	Donatallo::Project::ForEachDonationMethod([&](Donatallo::Project::DonationMethod method) {
-		std::cerr << "\t" << std::setw(maxlength) << std::left << Donatallo::Project::DonationMethodToKeyword(method);
-		std::cerr << " " << std::setw(0) << Donatallo::Project::DonationMethodToHumanReadable(method) << std::endl;
+	database.ForEachDonationMethod([&](const Donatallo::DonationMethod& method) {
+		std::cerr << "\t" << std::setw(maxlength) << std::left << method.keyword;
+		std::cerr << " " << std::setw(0) << method.name << std::endl;
 	});
 }
 
@@ -64,8 +64,11 @@ int main(int argc, char** argv) try {
 	const std::string progname = argv[0];
 
 	bool all_mode = false;
+	bool methods_list_mode = false;
+
 	std::string database_path = DONATALLO_DATADIR "/database";
-	std::set<Donatallo::Project::DonationMethod> wanted_methods;
+	std::set<std::string> wanted_method_names;
+	std::set<Donatallo::DonationMethodId> wanted_methods;
 
 	int ch;
 	while ((ch = getopt_long(argc, argv, "ad:m:h", longopts, NULL)) != -1) {
@@ -83,15 +86,12 @@ int main(int argc, char** argv) try {
 				do {
 					end = methods.find(",", start);
 					std::string methodname = methods.substr(start, end == std::string::npos ? std::string::npos : end - start);
-					if (methodname == "list") {
-						MethodsList();
-						exit(0);
-					} else {
-						Donatallo::Project::DonationMethod method = Donatallo::Project::DonationMethodFromKeyword(methodname);
-						if (method == Donatallo::Project::DonationMethod::UNKNOWN)
-							throw std::runtime_error("unknown donation method " + methodname);
-						wanted_methods.insert(method);
-					}
+
+					if (methodname == "list")
+						methods_list_mode = true;
+					else
+						wanted_method_names.insert(methodname);
+
 					start = end + 1;
 				} while (end != std::string::npos);
 			}
@@ -108,6 +108,14 @@ int main(int argc, char** argv) try {
 	// Load database
 	Donatallo::Database db;
 	db.Load(database_path);
+
+	if (methods_list_mode) {
+		MethodsList(db);
+		exit(0);
+	} else {
+		for (const auto& methodname : wanted_method_names)
+			wanted_methods.insert(db.DonationMethodIdByKeyword(methodname));
+	}
 
 	Donatallo::Result projects;
 
@@ -145,7 +153,7 @@ int main(int argc, char** argv) try {
 		for (auto imethod = project->donation_methods.cbegin(); imethod != project->donation_methods.cend(); imethod++) {
 			if (imethod != project->donation_methods.cbegin())
 				std::cout << ", ";
-			std::cout << Donatallo::Project::DonationMethodToHumanReadable(*imethod);
+			std::cout << db.DonationMethodById(*imethod).name;
 		}
 		std::cout << std::endl;
 		std::cout << std::endl;

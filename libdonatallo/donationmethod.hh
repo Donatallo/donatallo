@@ -17,16 +17,18 @@
  * along with donatallo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DONATALLO_METHOD_HH
-#define DONATALLO_METHOD_HH
+#ifndef DONATALLO_DONATIONMETHOD_HH
+#define DONATALLO_DONATIONMETHOD_HH
 
 #include <string>
 
 namespace Donatallo {
 
+typedef size_t DonationMethodId;
+
 class DonationMethod {
 public:
-	std::string id;
+	std::string keyword;
 	std::string name;
 };
 

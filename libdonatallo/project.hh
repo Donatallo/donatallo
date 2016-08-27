@@ -26,51 +26,17 @@
 #include <vector>
 #include <functional>
 
+#include <libdonatallo/donationmethod.hh>
+
 namespace Donatallo {
 
 class DonationVisitor;
 
 class Project {
 public:
-	enum class DonationMethod {
-		AMAZON,
-		ANONCOIN,
-		BANK_TRANSFER,
-		BITCOIN,
-		BOUNTYSOURCE,
-		CHEQUE,
-		CLICKANDPLEDGE,
-		CREDIT_CARD,
-		DASH,
-		DWOLLA,
-		FLATTR,
-		HARDWARE,
-		LITECOIN,
-		MERCHANDISE,
-		MONERO,
-		PATREON,
-		PAYPAL,
-		PLEDGIE,
-		STRIPE,
-		TIBIT,
-		WEBMONEY,
-		WESTERN_UNION,
-		YANDEX_MONEY,
-
-		UNKNOWN,
-	};
-
-public:
-	static DonationMethod DonationMethodFromKeyword(const std::string& method);
-	static std::string DonationMethodToHumanReadable(DonationMethod method);
-	static std::string DonationMethodToKeyword(DonationMethod method);
-
-	static void ForEachDonationMethod(std::function<void(DonationMethod)>&& handler);
-
-public:
 	typedef std::vector<std::string> DetectionTagVector;
 	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
-	typedef std::set<DonationMethod> DetectionMethodsSet;
+	typedef std::set<DonationMethodId> DetectionMethodsSet;
 
 public:
 	std::string name;

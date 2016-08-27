@@ -49,7 +49,7 @@ Result Result::SortByName(bool ascending) const {
 	return result;
 }
 
-Result Result::FilterByMethods(const std::set<Project::DonationMethod>& what) const {
+Result Result::FilterByMethods(const std::set<DonationMethodId>& what) const {
 	Result result;
 
 	for (const auto& project : results_) {

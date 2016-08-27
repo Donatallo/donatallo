@@ -64,6 +64,11 @@ public:
 	Result Query(const DetectorChain& detectors) const;
 
 	size_t size() const;
+
+	const DonationMethod& DonationMethodById(DonationMethodId id) const;
+	const DonationMethod& DonationMethodByKeyword(const std::string& keyword) const;
+	DonationMethodId DonationMethodIdByKeyword(const std::string& keyword) const;
+	void ForEachDonationMethod(std::function<void(const DonationMethod&)>&& handler) const;
 };
 
 }

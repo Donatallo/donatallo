@@ -137,15 +137,15 @@ void Database::LoadMethods(const std::string& path) {
 		DonationMethod method;
 
 		{
-			const auto& id_node = entry["id"];
+			const auto& keyword_node = entry["keyword"];
 
-			if (!id_node.IsDefined())
-				throw YAML::Exception(entry.Mark(), "missing id");
+			if (!keyword_node.IsDefined())
+				throw YAML::Exception(entry.Mark(), "missing keyword");
 
-			if (!id_node.IsScalar())
-				throw YAML::Exception(id_node.Mark(), "id must be a string");
+			if (!keyword_node.IsScalar())
+				throw YAML::Exception(keyword_node.Mark(), "keyword must be a string");
 
-			method.id = id_node.as<std::string>();
+			method.keyword = keyword_node.as<std::string>();
 		}
 
 		{
@@ -255,11 +255,7 @@ void Database::LoadProjects(const std::string& path) {
 				if (!method_node.IsScalar())
 					throw YAML::Exception(method_node.Mark(), "donation method must be a string");
 
-				Project::DonationMethod method = Project::DonationMethodFromKeyword(method_node.as<std::string>());
-				if (method == Project::DonationMethod::UNKNOWN)
-					std::cerr << "Warning: unknown donation method " << method_node.as<std::string>() << std::endl;
-				else
-					proj.donation_methods.insert(method);
+				proj.donation_methods.insert(DonationMethodIdByKeyword(method_node.as<std::string>()));
 			}
 		}
 
@@ -315,6 +311,37 @@ Result Database::Query(const DetectorChain& detectors) const {
 
 size_t Database::size() const {
 	return projects_.size();
+}
+
+const DonationMethod& Database::DonationMethodById(DonationMethodId id) const {
+	if (id >= methods_.size())
+		throw std::runtime_error("bad donation method id");
+
+	return methods_[id];
+}
+
+const DonationMethod& Database::DonationMethodByKeyword(const std::string& keyword) const {
+	for (const auto& method: methods_)
+		if (method.keyword == keyword)
+			return method;
+
+	throw std::runtime_error("bad donation method keyword");
+}
+
+DonationMethodId Database::DonationMethodIdByKeyword(const std::string& keyword) const {
+	DonationMethodId id = 0;
+	for (const auto& method: methods_) {
+		if (method.keyword == keyword)
+			return id;
+		id++;
+	}
+
+	throw std::runtime_error("bad donation method keyword");
+}
+
+void Database::ForEachDonationMethod(std::function<void(const DonationMethod&)>&& handler) const {
+	for (const auto& method: methods_)
+		handler(method);
 }
 
 }

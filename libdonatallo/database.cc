@@ -258,7 +258,7 @@ void Database::LoadProjects(const std::string& path) {
 				std::string method = method_node.as<std::string>();
 
 				if (!HasDonationMethod(method))
-					std::cerr << "Warning: unknown donation method " << method << std::endl;
+					throw YAML::Exception(method_node.Mark(), "unknown donation method");
 				else
 					proj.donation_methods.emplace(std::move(method));
 			}

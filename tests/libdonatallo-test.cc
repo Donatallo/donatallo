@@ -43,7 +43,7 @@ BEGIN_TEST(int, char*[])
 		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").keyword, "bitcoin");
 		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").name, "BitCoin");
 
-		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::exception);
+		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::runtime_error);
 
 		int num_donation_methods = 0;
 		db.ForEachDonationMethod([&](const DonationMethod&) {

@@ -23,7 +23,6 @@
 #include <vector>
 #include <cstddef>
 
-#include <libdonatallo/donationmethod.hh>
 #include <libdonatallo/project.hh>
 
 namespace Donatallo {
@@ -42,7 +41,7 @@ public:
 	void Add(const Project* project);
 
 	Result SortByName(bool ascending = true) const;
-	Result FilterByMethods(const std::set<DonationMethodId>& what) const;
+	Result FilterByMethods(const std::set<std::string>& what) const;
 
 	size_t size() const;
 	bool empty() const;

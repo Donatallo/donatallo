@@ -48,7 +48,7 @@ public:
 
 private:
 	std::vector<Project> projects_;
-	std::vector<DonationMethod> methods_;
+	std::map<std::string, DonationMethod> methods_;
 
 private:
 	void LoadMeta(const std::string& path, std::vector<std::string>& method_files_to_load, std::vector<std::string>& project_files_to_load);
@@ -65,9 +65,8 @@ public:
 
 	size_t size() const;
 
-	const DonationMethod& DonationMethodById(DonationMethodId id) const;
-	const DonationMethod& DonationMethodByKeyword(const std::string& keyword) const;
-	DonationMethodId DonationMethodIdByKeyword(const std::string& keyword) const;
+	bool HasDonationMethod(const std::string& keyword) const;
+	const DonationMethod& GetDonationMethod(const std::string& keyword) const;
 	void ForEachDonationMethod(std::function<void(const DonationMethod&)>&& handler) const;
 };
 

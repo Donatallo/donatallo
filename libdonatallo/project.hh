@@ -26,8 +26,6 @@
 #include <vector>
 #include <functional>
 
-#include <libdonatallo/donationmethod.hh>
-
 namespace Donatallo {
 
 class DonationVisitor;
@@ -36,7 +34,7 @@ class Project {
 public:
 	typedef std::vector<std::string> DetectionTagVector;
 	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
-	typedef std::set<DonationMethodId> DetectionMethodsSet;
+	typedef std::set<std::string> DetectionMethodsSet;
 
 public:
 	std::string name;

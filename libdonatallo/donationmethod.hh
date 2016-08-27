@@ -24,8 +24,6 @@
 
 namespace Donatallo {
 
-typedef size_t DonationMethodId;
-
 class DonationMethod {
 public:
 	std::string keyword;

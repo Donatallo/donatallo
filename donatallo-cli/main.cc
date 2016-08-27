@@ -67,8 +67,7 @@ int main(int argc, char** argv) try {
 	bool methods_list_mode = false;
 
 	std::string database_path = DONATALLO_DATADIR "/database";
-	std::set<std::string> wanted_method_names;
-	std::set<Donatallo::DonationMethodId> wanted_methods;
+	std::set<std::string> wanted_methods;
 
 	int ch;
 	while ((ch = getopt_long(argc, argv, "ad:m:h", longopts, NULL)) != -1) {
@@ -90,7 +89,7 @@ int main(int argc, char** argv) try {
 					if (methodname == "list")
 						methods_list_mode = true;
 					else
-						wanted_method_names.insert(methodname);
+						wanted_methods.insert(methodname);
 
 					start = end + 1;
 				} while (end != std::string::npos);
@@ -113,8 +112,9 @@ int main(int argc, char** argv) try {
 		MethodsList(db);
 		exit(0);
 	} else {
-		for (const auto& methodname : wanted_method_names)
-			wanted_methods.insert(db.DonationMethodIdByKeyword(methodname));
+		for (const auto& method : wanted_methods)
+			if (!db.HasDonationMethod(method))
+				std::cerr << "Warning: unknown donation method " << method << std::endl;
 	}
 
 	Donatallo::Result projects;
@@ -153,7 +153,7 @@ int main(int argc, char** argv) try {
 		for (auto imethod = project->donation_methods.cbegin(); imethod != project->donation_methods.cend(); imethod++) {
 			if (imethod != project->donation_methods.cbegin())
 				std::cout << ", ";
-			std::cout << db.DonationMethodById(*imethod).name;
+			std::cout << db.GetDonationMethod(*imethod).name;
 		}
 		std::cout << std::endl;
 		std::cout << std::endl;

@@ -160,7 +160,7 @@ void Database::LoadMethods(const std::string& path) {
 			method.name = name_node.as<std::string>();
 		}
 
-		methods_.emplace_back(std::move(method));
+		methods_.insert(std::make_pair(method.keyword, std::move(method)));
 	}
 }
 
@@ -255,7 +255,12 @@ void Database::LoadProjects(const std::string& path) {
 				if (!method_node.IsScalar())
 					throw YAML::Exception(method_node.Mark(), "donation method must be a string");
 
-				proj.donation_methods.insert(DonationMethodIdByKeyword(method_node.as<std::string>()));
+				std::string method = method_node.as<std::string>();
+
+				if (!HasDonationMethod(method))
+					std::cerr << "Warning: unknown donation method " << method << std::endl;
+				else
+					proj.donation_methods.emplace(std::move(method));
 			}
 		}
 
@@ -313,35 +318,22 @@ size_t Database::size() const {
 	return projects_.size();
 }
 
-const DonationMethod& Database::DonationMethodById(DonationMethodId id) const {
-	if (id >= methods_.size())
-		throw std::runtime_error("bad donation method id");
-
-	return methods_[id];
+bool Database::HasDonationMethod(const std::string& keyword) const {
+	return methods_.find(keyword) != methods_.end();
 }
 
-const DonationMethod& Database::DonationMethodByKeyword(const std::string& keyword) const {
-	for (const auto& method: methods_)
-		if (method.keyword == keyword)
-			return method;
+const DonationMethod& Database::GetDonationMethod(const std::string& keyword) const {
+	auto iter = methods_.find(keyword);
 
-	throw std::runtime_error("bad donation method keyword");
-}
+	if (iter == methods_.end())
+		throw std::runtime_error("bad donation method keyword");
 
-DonationMethodId Database::DonationMethodIdByKeyword(const std::string& keyword) const {
-	DonationMethodId id = 0;
-	for (const auto& method: methods_) {
-		if (method.keyword == keyword)
-			return id;
-		id++;
-	}
-
-	throw std::runtime_error("bad donation method keyword");
+	return iter->second;
 }
 
 void Database::ForEachDonationMethod(std::function<void(const DonationMethod&)>&& handler) const {
 	for (const auto& method: methods_)
-		handler(method);
+		handler(method.second);
 }
 
 }

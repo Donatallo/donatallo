@@ -81,14 +81,14 @@ BEGIN_TEST(int, char*[])
 		}
 
 		// Check filtering
-		auto filter1 = res.FilterByMethods({db.DonationMethodIdByKeyword("paypal")});
+		auto filter1 = res.FilterByMethods({"paypal"});
 
 		EXPECT_EQUAL(filter1.size(), 1U);
 
 		if (filter1.size() == 1)
 			EXPECT_EQUAL(filter1[0].name, "always_a");
 
-		auto filter2 = res.FilterByMethods({db.DonationMethodIdByKeyword("bitcoin")});
+		auto filter2 = res.FilterByMethods({"bitcoin"});
 
 		EXPECT_EQUAL(filter2.size(), 1U);
 

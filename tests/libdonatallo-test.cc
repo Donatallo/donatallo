@@ -21,6 +21,7 @@ BEGIN_TEST(int, char*[])
 	EXPECT_NO_EXCEPTION(db.Load(TESTDATA_DIR "/testdatabase"));
 
 	{
+		// Query all
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
@@ -34,7 +35,26 @@ BEGIN_TEST(int, char*[])
 	}
 
 	{
-		// empty detector chain should not match anything
+		// Donation methods stuff
+		EXPECT_TRUE(db.HasDonationMethod("paypal"));
+		EXPECT_TRUE(db.HasDonationMethod("bitcoin"));
+		EXPECT_TRUE(!db.HasDonationMethod("no-such-method"));
+
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").keyword, "bitcoin");
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").name, "BitCoin");
+
+		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::exception);
+
+		int num_donation_methods = 0;
+		db.ForEachDonationMethod([&](const DonationMethod&) {
+			num_donation_methods++;
+		});
+
+		EXPECT_EQUAL(num_donation_methods, 2);
+	}
+
+	{
+		// Empty detector chain should not match anything
 		DetectorChain emptychain;
 
 		Result res = db.Query(emptychain);
@@ -212,25 +232,5 @@ BEGIN_TEST(int, char*[])
 #else
 		EXPECT_TRUE(res.size() >= 2); // always
 #endif
-	}
-
-	{
-		// donation types stuff
-
-		EXPECT_TRUE(db.HasDonationMethod("paypal"));
-		EXPECT_TRUE(db.HasDonationMethod("bitcoin"));
-		EXPECT_TRUE(!db.HasDonationMethod("no-such-method"));
-
-		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").keyword, "bitcoin");
-		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").name, "BitCoin");
-
-		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::exception);
-
-		int num_donation_methods = 0;
-		db.ForEachDonationMethod([&](const DonationMethod&) {
-			num_donation_methods++;
-		});
-
-		EXPECT_EQUAL(num_donation_methods, 2);
 	}
 END_TEST()

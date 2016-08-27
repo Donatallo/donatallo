@@ -215,12 +215,22 @@ BEGIN_TEST(int, char*[])
 	}
 
 	{
-		/*
-		// doantion types stuff
-		Project::ForEachDonationMethod([&](const DonationMethod& method) {
-			EXPECT_TRUE(method == Project::DonationMethodFromKeyword(Project::DonationMethodToKeyword(method)));
-			EXPECT_NO_EXCEPTION(Project::DonationMethodToHumanReadable(method));
-			EXPECT_TRUE(Project::DonationMethodToHumanReadable(method) != "");
-		});*/
+		// donation types stuff
+
+		EXPECT_TRUE(db.HasDonationMethod("paypal"));
+		EXPECT_TRUE(db.HasDonationMethod("bitcoin"));
+		EXPECT_TRUE(!db.HasDonationMethod("no-such-method"));
+
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").keyword, "bitcoin");
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").name, "BitCoin");
+
+		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::exception);
+
+		int num_donation_methods = 0;
+		db.ForEachDonationMethod([&](const DonationMethod&) {
+			num_donation_methods++;
+		});
+
+		EXPECT_EQUAL(num_donation_methods, 2);
 	}
 END_TEST()

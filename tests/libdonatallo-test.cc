@@ -21,6 +21,7 @@ BEGIN_TEST(int, char*[])
 	EXPECT_NO_EXCEPTION(db.Load(TESTDATA_DIR "/testdatabase"));
 
 	{
+		// Query all
 		Result res = db.GetAll();
 
 		EXPECT_TRUE(!res.empty());
@@ -34,7 +35,26 @@ BEGIN_TEST(int, char*[])
 	}
 
 	{
-		// empty detector chain should not match anything
+		// Donation methods stuff
+		EXPECT_TRUE(db.HasDonationMethod("paypal"));
+		EXPECT_TRUE(db.HasDonationMethod("bitcoin"));
+		EXPECT_TRUE(!db.HasDonationMethod("no-such-method"));
+
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").keyword, "bitcoin");
+		EXPECT_EQUAL(db.GetDonationMethod("bitcoin").name, "BitCoin");
+
+		EXPECT_EXCEPTION(db.GetDonationMethod("no-such-method"), std::runtime_error);
+
+		int num_donation_methods = 0;
+		db.ForEachDonationMethod([&](const DonationMethod&) {
+			num_donation_methods++;
+		});
+
+		EXPECT_EQUAL(num_donation_methods, 2);
+	}
+
+	{
+		// Empty detector chain should not match anything
 		DetectorChain emptychain;
 
 		Result res = db.Query(emptychain);
@@ -81,14 +101,14 @@ BEGIN_TEST(int, char*[])
 		}
 
 		// Check filtering
-		auto filter1 = res.FilterByMethods({Project::DonationMethod::PAYPAL});
+		auto filter1 = res.FilterByMethods({"paypal"});
 
 		EXPECT_EQUAL(filter1.size(), 1U);
 
 		if (filter1.size() == 1)
 			EXPECT_EQUAL(filter1[0].name, "always_a");
 
-		auto filter2 = res.FilterByMethods({Project::DonationMethod::BITCOIN});
+		auto filter2 = res.FilterByMethods({"bitcoin"});
 
 		EXPECT_EQUAL(filter2.size(), 1U);
 
@@ -212,14 +232,5 @@ BEGIN_TEST(int, char*[])
 #else
 		EXPECT_TRUE(res.size() >= 2); // always
 #endif
-	}
-
-	{
-		// doantion types stuff
-		Project::ForEachDonationMethod([&](Project::DonationMethod method) {
-			EXPECT_TRUE(method == Project::DonationMethodFromKeyword(Project::DonationMethodToKeyword(method)));
-			EXPECT_NO_EXCEPTION(Project::DonationMethodToHumanReadable(method));
-			EXPECT_TRUE(Project::DonationMethodToHumanReadable(method) != "");
-		});
 	}
 END_TEST()

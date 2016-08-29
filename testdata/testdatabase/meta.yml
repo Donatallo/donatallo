@@ -1,4 +1,6 @@
 ---
-version: 0.0.0
-files:
-  - testdata.yml
+version: 1.0.0
+methods:
+  - methods.yml
+projects:
+  - projects.yml

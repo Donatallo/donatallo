@@ -25,9 +25,9 @@ ELSEIF(STANDALONE)
 ENDIF(SYSTEMWIDE)
 
 # depends
-IF(NOT EXISTS ${PROJECT_SOURCE_DIR}/data/database/meta.yml)
+IF(NOT EXISTS ${PROJECT_SOURCE_DIR}/data/database/meta.yaml)
 	MESSAGE(FATAL_ERROR "The database submodule was not checked out to data/database\nIt is likely that you forgot to run\n  git submodule init && git submodule update")
-ENDIF(NOT EXISTS ${PROJECT_SOURCE_DIR}/data/database/meta.yml)
+ENDIF(NOT EXISTS ${PROJECT_SOURCE_DIR}/data/database/meta.yaml)
 
 # flags
 SET(CMAKE_CXX_FLAGS_COVERAGE "${CMAKE_CXX_FLAGS_DEBUG} --coverage")

@@ -17,34 +17,18 @@
  * along with donatallo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef DONATALLO_PROJECT_HH
-#define DONATALLO_PROJECT_HH
+#ifndef DONATALLO_DONATIONMETHOD_HH
+#define DONATALLO_DONATIONMETHOD_HH
 
 #include <string>
-#include <set>
-#include <map>
-#include <vector>
-#include <functional>
 
 namespace Donatallo {
 
-class DonationVisitor;
-
-class Project {
+class DonationMethod {
 public:
-	typedef std::vector<std::string> DetectionTagVector;
-	typedef std::map<std::string, DetectionTagVector> DetectionTagMap;
-	typedef std::set<std::string> DetectionMethodsSet;
-
-public:
+	std::string keyword;
 	std::string name;
-	std::string comment;
-	std::string url;
-
-	DetectionTagMap detection_tags;
-
-	std::string donation_url;
-	DetectionMethodsSet donation_methods;
+	std::string icon;
 };
 
 }

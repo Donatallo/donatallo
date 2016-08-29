@@ -41,7 +41,7 @@ public:
 	void Add(const Project* project);
 
 	Result SortByName(bool ascending = true) const;
-	Result FilterByMethods(const std::set<Project::DonationMethod>& what) const;
+	Result FilterByMethods(const std::set<std::string>& what) const;
 
 	size_t size() const;
 	bool empty() const;

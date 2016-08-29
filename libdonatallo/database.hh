@@ -25,6 +25,7 @@
 
 #include <libdonatallo/detector.hh>
 #include <libdonatallo/project.hh>
+#include <libdonatallo/donationmethod.hh>
 #include <libdonatallo/result.hh>
 
 namespace Donatallo {
@@ -47,9 +48,12 @@ public:
 
 private:
 	std::vector<Project> projects_;
+	std::map<std::string, DonationMethod> methods_;
 
-	void LoadFile(const std::string& path);
-	void LoadMeta(const std::string& path, std::vector<std::string>& files_to_load);
+private:
+	void LoadMeta(const std::string& path, std::vector<std::string>& method_files_to_load, std::vector<std::string>& project_files_to_load);
+	void LoadMethods(const std::string& path);
+	void LoadProjects(const std::string& path);
 
 public:
 	Database();
@@ -60,6 +64,10 @@ public:
 	Result Query(const DetectorChain& detectors) const;
 
 	size_t size() const;
+
+	bool HasDonationMethod(const std::string& keyword) const;
+	const DonationMethod& GetDonationMethod(const std::string& keyword) const;
+	void ForEachDonationMethod(std::function<void(const DonationMethod&)>&& handler) const;
 };
 
 }

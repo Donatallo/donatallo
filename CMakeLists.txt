@@ -6,6 +6,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 # options
+OPTION(DONATALLO_CLI "Build command line application" ON)
+OPTION(DONATALLO_QT "Build Qt5 application" ON)
+
 OPTION(SYSTEMWIDE "Build for systemwide installation" OFF)
 OPTION(STANDALONE "Build for creating standalone package" OFF)
 
@@ -44,7 +47,12 @@ INCLUDE_DIRECTORIES(BEFORE .)
 
 # subdirectories
 ADD_SUBDIRECTORY(libdonatallo)
-ADD_SUBDIRECTORY(donatallo-cli)
+IF(DONATALLO_CLI)
+	ADD_SUBDIRECTORY(donatallo-cli)
+ENDIF(DONATALLO_CLI)
+IF(DONATALLO_QT)
+	ADD_SUBDIRECTORY(donatallo-qt)
+ENDIF(DONATALLO_QT)
 
 ENABLE_TESTING()
 ADD_SUBDIRECTORY(tests)

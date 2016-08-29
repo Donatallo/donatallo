@@ -45,20 +45,18 @@ private:
 		QRect total_item_rect;
 	};
 
-	static constexpr int project_cell_margin_ = 5;
-	static constexpr int project_name_bottom_spacing_ = project_cell_margin_;
-	static constexpr int project_name_right_shift_ = 10;
-	static constexpr float project_name_font_size_multiplier_ = 1.2f;
-
-	static constexpr int payment_method_icon_size_ = 32;
-	static constexpr int payment_method_icon_spacing_ = 5;
-	static constexpr int payment_method_icon_rounding_ = 5;
+	struct DonationMethodData {
+		QString name;
+		QPixmap icon;
+	};
 
 private:
-	QMap<QString, QPixmap> payment_method_icons_;
+	QMap<QString, DonationMethodData> donation_methods_;
 
 public:
 	ProjectDelegate(QObject *parent = nullptr);
+
+	void addDonationMethod(const QString& method, const QString& name, const QString& iconpath = "");
 
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;

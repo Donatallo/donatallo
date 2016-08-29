@@ -23,14 +23,16 @@
 #include <QAbstractItemModel>
 
 #include <libdonatallo/result.hh>
+#include <libdonatallo/database.hh>
 
 class Model : public QAbstractItemModel {
 	Q_OBJECT
 private:
-	Donatallo::Result result_;
+	const Donatallo::Database& database_;
+	const Donatallo::Result& result_;
 
 public:
-	Model(Donatallo::Result result, QObject* parent = nullptr);
+	Model(const Donatallo::Database& database, const Donatallo::Result& result, QObject* parent = nullptr);
 
 	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 	int columnCount(const QModelIndex& parent = QModelIndex()) const final;

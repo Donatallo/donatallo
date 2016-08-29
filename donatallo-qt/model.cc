@@ -19,7 +19,7 @@
 
 #include "model.hh"
 
-Model::Model(Donatallo::Result result, QObject* parent) : QAbstractItemModel(parent), result_(result) {
+Model::Model(const Donatallo::Database& database, const Donatallo::Result& result, QObject* parent) : QAbstractItemModel(parent), database_(database), result_(result) {
 }
 
 int Model::rowCount(const QModelIndex& parent) const {
@@ -48,7 +48,7 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 			QStringList donations;
 
 			for (const auto& method : result_[index.row()].donation_methods)
-				donations.append(QString::fromStdString(Donatallo::Project::DonationMethodToKeyword(method)));
+				donations.append(QString::fromStdString(method));
 
 			return donations;
 		}
@@ -57,7 +57,7 @@ QVariant Model::data(const QModelIndex &index, int role) const {
 			QStringList donations;
 
 			for (const auto& method : result_[index.row()].donation_methods)
-				donations.append(QString::fromStdString(Donatallo::Project::DonationMethodToHumanReadable(method)));
+				donations.append(QString::fromStdString(database_.GetDonationMethod(method).name));
 
 			return donations.join(", ");
 		}

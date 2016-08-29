@@ -24,23 +24,27 @@
 
 #include "projectdelegate.hh"
 
-constexpr int ProjectDelegate::project_cell_margin_;
-constexpr int ProjectDelegate::project_name_bottom_spacing_;
-constexpr int ProjectDelegate::project_name_right_shift_;
-constexpr float ProjectDelegate::project_name_font_size_multiplier_;
+namespace {
 
-constexpr int ProjectDelegate::payment_method_icon_size_;
-constexpr int ProjectDelegate::payment_method_icon_spacing_;
-constexpr int ProjectDelegate::payment_method_icon_rounding_;
+constexpr int project_cell_margin_ = 5;
+constexpr int project_name_bottom_spacing_ = project_cell_margin_;
+constexpr int project_name_right_shift_ = 10;
+constexpr float project_name_font_size_multiplier_ = 1.2f;
+
+constexpr int payment_method_icon_size_ = 32;
+constexpr int payment_method_icon_spacing_ = 5;
+constexpr int payment_method_icon_rounding_ = 5;
+
+}
 
 ProjectDelegate::ProjectDelegate(QObject *parent) : QStyledItemDelegate(parent) {
-	QDirIterator it(DONATALLO_DATADIR "/database/payment_icons/", { "*.png" }, QDir::Files);
-	while (it.hasNext()) {
-		it.next();
-		QString name = it.fileName();
-		name.chop(4);
-		payment_method_icons_[name] = QPixmap(it.filePath());
-	}
+}
+
+void ProjectDelegate::addDonationMethod(const QString& method, const QString& name, const QString& iconpath) {
+	donation_methods_[method].name = name;
+
+	if (iconpath != "")
+		donation_methods_[method].icon = QPixmap(QString(DONATALLO_DATADIR "/database/") + iconpath);
 }
 
 void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
@@ -85,26 +89,21 @@ void ProjectDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
 				payment_method_icon_size_
 			);
 
-			auto icon = payment_method_icons_.find(method);
-			if (icon != payment_method_icons_.end()) {
-				painter->drawPixmap(target_rect, *icon);
-			} else {
+			const auto& methoddata = donation_methods_.find(method);
+
+			if (methoddata == donation_methods_.end())
+				continue;
+
+			if (!methoddata->icon.isNull()) {
+				painter->drawPixmap(target_rect, methoddata->icon);
+			} else if (methoddata != donation_methods_.end()) {
 				painter->setPen(Qt::NoPen);
 				painter->setBrush(QColor::fromHsv((qHash(method) >> 5) % 360, 128, 192));
 				painter->setRenderHint(QPainter::Antialiasing);
 				painter->drawRoundedRect(target_rect, payment_method_icon_rounding_, payment_method_icon_rounding_);
 
 				painter->setPen(Qt::white);
-				painter->drawText(target_rect.marginsRemoved(QMargins(2, 2, 2, 2)), Qt::AlignHCenter | Qt::TextWrapAnywhere,
-					// XXX: lol, simplify this
-					QString::fromStdString(
-						Donatallo::Project::DonationMethodToHumanReadable(
-							Donatallo::Project::DonationMethodFromKeyword(
-								method.toStdString()
-							)
-						)
-					)
-				);
+				painter->drawText(target_rect.marginsRemoved(QMargins(2, 2, 2, 2)), Qt::AlignHCenter | Qt::TextWrapAnywhere, methoddata->name);
 			}
 		}
 	}

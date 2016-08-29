@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
 	Donatallo::Result res = db.GetAll().SortByName();
 
-	Model model(res);
+	Model model(db, res);
 
 	QTreeView view;
 	view.setRootIsDecorated(false);
@@ -45,6 +45,14 @@ int main(int argc, char** argv) {
 	view.header()->setStretchLastSection(false);
 
 	ProjectDelegate delegate;
+
+	db.ForEachDonationMethod([&](const Donatallo::DonationMethod& method) {
+		delegate.addDonationMethod(
+			QString::fromStdString(method.keyword),
+			QString::fromStdString(method.name),
+			QString::fromStdString(method.icon)
+		);
+	});
 
 	view.setItemDelegate(&delegate);
 

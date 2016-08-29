@@ -273,9 +273,9 @@ void Database::Load(const std::string& dbdir) {
 	std::vector<std::string> project_files_to_load;
 
 	try {
-		LoadMeta(dbdir + "/meta.yml", method_files_to_load, project_files_to_load);
+		LoadMeta(dbdir + "/meta.yaml", method_files_to_load, project_files_to_load);
 	} catch (YAML::Exception& e) {
-		throw ParsingException(dbdir + "/meta.yml", e.mark.line, e.mark.column, e.msg);
+		throw ParsingException(dbdir + "/meta.yaml", e.mark.line, e.mark.column, e.msg);
 	}
 
 	for (const auto& file : method_files_to_load) {

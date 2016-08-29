@@ -28,6 +28,7 @@ class DonationMethod {
 public:
 	std::string keyword;
 	std::string name;
+	std::string icon;
 };
 
 }

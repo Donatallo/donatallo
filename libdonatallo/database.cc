@@ -160,6 +160,17 @@ void Database::LoadMethods(const std::string& path) {
 			method.name = name_node.as<std::string>();
 		}
 
+		{
+			const auto& icon_node = entry["icon"];
+
+			if (icon_node.IsDefined()) {
+				if (!icon_node.IsScalar())
+					throw YAML::Exception(icon_node.Mark(), "icon must be a string");
+
+				method.icon = icon_node.as<std::string>();
+			}
+		}
+
 		methods_.insert(std::make_pair(method.keyword, std::move(method)));
 	}
 }

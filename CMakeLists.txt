@@ -17,11 +17,13 @@ IF(SYSTEMWIDE)
 	SET(LIBDIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE STRING "Where to install libraries")
 	SET(DATAROOTDIR "${CMAKE_INSTALL_PREFIX}/share" CACHE STRING "Root directory for data files")
 	SET(DATADIR "${DATAROOTDIR}/donatallo" CACHE STRING "Where to install data files")
+	SET(DESKTOPDIR "${DATAROOTDIR}/applications" CACHE STRING "Where to install .desktop files")
 ELSEIF(STANDALONE)
 	SET(BINDIR "." CACHE STRING "Where to install binaries")
 	SET(LIBDIR "." CACHE STRING "Where to install libraries")
 	SET(DATAROOTDIR "." CACHE STRING "Root directory for data files")
 	SET(DATADIR "data" CACHE STRING "Where to install data files")
+	SET(DESKTOPDIR "." CACHE STRING "Where to install .desktop files")
 ENDIF(SYSTEMWIDE)
 
 # depends

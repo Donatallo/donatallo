@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Donatallo
+Comment=Donations manager
+Exec=donatallo-qt
+Terminal=false
+Type=Applcation
+Categories=Utility;Finance;Qt;

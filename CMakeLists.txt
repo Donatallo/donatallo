@@ -62,7 +62,7 @@ IF(SYSTEMWIDE OR STANDALONE)
 	INSTALL(DIRECTORY data/database DESTINATION ${DATADIR}
 		FILES_MATCHING
 		PATTERN "*.yaml"
-		PATTERN "schemas/*.yaml" EXCLUDE
+		PATTERN "schemas" EXCLUDE
 		PATTERN "payment_icons/*.png"
 		PATTERN "payment_icons/COPYING.md"
 	)

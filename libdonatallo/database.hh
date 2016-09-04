@@ -46,6 +46,10 @@ public:
 		static std::string build_what(const std::string& file, int line, int column, const std::string& msg);
 	};
 
+	enum QueryFlags {
+		INVERT_DETECTION = 1,
+	};
+
 private:
 	std::vector<Project> projects_;
 	std::map<std::string, DonationMethod> methods_;
@@ -61,7 +65,7 @@ public:
 	void Load(const std::string& dbdir);
 
 	Result GetAll() const;
-	Result Query(const DetectorChain& detectors) const;
+	Result Query(const DetectorChain& detectors, int flags = 0) const;
 
 	size_t size() const;
 

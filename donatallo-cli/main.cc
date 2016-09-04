@@ -31,12 +31,14 @@ static struct option longopts[] = {
 	{ "all",       no_argument,       nullptr, 'a' },
 	{ "database",  required_argument, nullptr, 'd' },
 	{ "help",      no_argument,       nullptr, 'h' },
+	{ "invert",    no_argument,       nullptr, 'i' },
 	{ "method",    required_argument, nullptr, 'm' },
 	{ "methods",   required_argument, nullptr, 'm' },
 	{ nullptr,     0,                 nullptr, 0   },
 };
 
 void Usage(const std::string& progname) {
+	//            [ 75 character width                                                      ]
 	std::cerr << "Usage: " << progname << " [-ah] [-d DATABASE] [-m METHOD,...]" << std::endl;
 	std::cerr << std::endl;
 	std::cerr << " -a, --all             list all projects in the database" << std::endl;
@@ -44,7 +46,9 @@ void Usage(const std::string& progname) {
 	std::cerr << " -m, --method=METHOD, --methods=METHOD,..." << std::endl;
 	std::cerr << "                       specify donation methods filter" << std::endl;
 	std::cerr << "                       (see --methods=list for supported methods list)" << std::endl;
+	std::cerr << " -i, --invert          invert project detection: show not detected projects" << std::endl;
 	std::cerr << " -h, --help            show this help" << std::endl;
+	//            [ 75 character width                                                      ]
 }
 
 void MethodsList(const Donatallo::Database& database) {
@@ -65,12 +69,13 @@ int main(int argc, char** argv) try {
 
 	bool all_mode = false;
 	bool methods_list_mode = false;
+	int query_flags = 0;
 
 	std::string database_path = DONATALLO_DATADIR "/database";
 	std::set<std::string> wanted_methods;
 
 	int ch;
-	while ((ch = getopt_long(argc, argv, "ad:m:h", longopts, NULL)) != -1) {
+	while ((ch = getopt_long(argc, argv, "ad:him:", longopts, NULL)) != -1) {
 		switch (ch) {
 		case 'a':
 			all_mode = true;
@@ -94,6 +99,9 @@ int main(int argc, char** argv) try {
 					start = end + 1;
 				} while (end != std::string::npos);
 			}
+			break;
+		case 'i':
+			query_flags |= Donatallo::Database::INVERT_DETECTION;
 			break;
 		case 'h':
 			Usage(progname);
@@ -131,7 +139,7 @@ int main(int argc, char** argv) try {
 
 		std::cerr << "Gathering information... Done" << std::endl;
 
-		projects = db.Query(detectors);
+		projects = db.Query(detectors, query_flags);
 	}
 
 	projects = projects.SortByName();

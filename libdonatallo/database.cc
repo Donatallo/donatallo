@@ -315,11 +315,11 @@ Result Database::GetAll() const {
 	return res;
 }
 
-Result Database::Query(const DetectorChain& detectors) const {
+Result Database::Query(const DetectorChain& detectors, int flags) const {
 	Result res;
 
 	for (const auto& project: projects_)
-		if (detectors.Check(project))
+		if (detectors.Check(project) != (flags & INVERT_DETECTION))
 			res.Add(&project);
 
 	return res;

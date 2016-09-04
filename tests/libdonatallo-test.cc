@@ -61,6 +61,11 @@ BEGIN_TEST(int, char*[])
 
 		EXPECT_TRUE(res.empty());
 		EXPECT_EQUAL(res.size(), 0U);
+
+		// Inverse match
+		Result invres = db.Query(emptychain, Database::INVERT_DETECTION);
+
+		EXPECT_EQUAL(invres.size(), 7U);
 	}
 
 	{
@@ -80,6 +85,11 @@ BEGIN_TEST(int, char*[])
 			EXPECT_EQUAL(res[0].name, "always_b");
 			EXPECT_EQUAL(res[1].name, "always_a");
 		}
+
+		// Inverse match
+		Result invres = db.Query(detectors, Database::INVERT_DETECTION);
+
+		EXPECT_EQUAL(invres.size(), 5U);
 
 		// Check sorting
 		auto sort1 = res.SortByName();
